@@ -19,3 +19,15 @@ cleaning and making again.
 
     $ make clean
     $ make all
+
+Activating the sdk
+-------------------
+Once the sdk is installed, you have to activate that virtualenv. Right now
+it's a bit of a pita, you have to cd to the sdk dir, activate, and then back
+out again.
+
+::
+
+    cd sdk
+    source bin/activate
+    cd ../
