@@ -2,12 +2,19 @@ WD:=$(shell pwd)
 
 SDKURL = https://ftp.mozilla.org/pub/mozilla.org/labs/jetpack/jetpack-sdk-latest.zip
 
-.PHONY: install_sdk
-install_sdk: clean_sdk
+.PHONY: all
+all: sdk
+
+.PHONY: clean
+clean: clean_sdk
+
+
+sdk: sdk/bin/activate
+sdk/bin/activate:
 	wget $(SDKURL) -O /tmp/sdk.zip
 	unzip /tmp/sdk.zip -d $(WD)/sdk
 	cd sdk/addon-* && mv * ../ && cd ../ && rm -r addon-*
 
-.PHONE: clean_sdk
+.PHONY: clean_sdk
 clean_sdk:
 	rm -rf sdk/*
