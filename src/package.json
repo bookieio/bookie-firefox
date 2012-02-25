@@ -1,8 +1,8 @@
 {
-  "name": "src",
-  "fullName": "src",
-  "description": "a basic add-on",
-  "author": "",
-  "license": "MPL 1.1/GPL 2.0/LGPL 2.1",
-  "version": "0.1"
+    "author": "Bookie",
+    "description": "Bookie for Firefox enables you to save and update bookmarks stored on a Bookie server instance. See http://docs.bmark.us for more information.",
+    "fullName": "Bookie for Firefox",
+    "license": "AGPL",
+    "name": "Bookie",
+    "version": "0.4"
 }
