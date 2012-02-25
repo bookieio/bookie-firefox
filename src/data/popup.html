@@ -210,13 +210,10 @@
         -->
     </body>
     <script type="text/javascript">
-        self.port.on("active", function(title) {
+        addon.port.on("active", function(title) {
             console.log("received active");
             console.log(title);
-            alert(title);
-            document.body.innerHTML = title;
+            document.getElementById("description").value = title;
         });
-        self.port.emit("show", "showing");
-        document.getElementById("bmarkbody").innerHTML = self;
     </script>
 </html>
