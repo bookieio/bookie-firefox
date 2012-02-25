@@ -79,8 +79,7 @@
                     <li><input type="text" id="description" placeholder="title" name="description" /> </li>
                     <li><input type="text" placeholder="tags" name="tags" id="tag_filter" /></li>
                     <li id="suggested_tags">Suggested Tags: <span id="latest_tags"></span></li>
-                    <li><textarea placeholder="notes" name="extended"
-                        id="extended" style="height: 5em;"></textarea></li>
+                    <li><textarea placeholder="notes" name="extended" id="extended" style="height: 5em;"></textarea></li>
                     <li>
                         <button type="submit" id="submit" class="button">Save</button>
                         <button type="button" id="delete" class="button" style="display: none;">Delete</button>
@@ -93,6 +92,7 @@
         </ul>
         <p>&nbsp;</p>
 
+        <!--
         <script src="combo/combo.js"></script>
         <script type="text/javascript">
             YUI.GlobalConfig = {
@@ -207,5 +207,16 @@
                 }
            });
         </script>
+        -->
     </body>
+    <script type="text/javascript">
+        self.port.on("active", function(title) {
+            console.log("received active");
+            console.log(title);
+            alert(title);
+            document.body.innerHTML = title;
+        });
+        self.port.emit("show", "showing");
+        document.getElementById("bmarkbody").innerHTML = self;
+    </script>
 </html>
