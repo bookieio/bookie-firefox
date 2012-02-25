@@ -23,11 +23,11 @@ clean_sdk:
 bookie: src/lib/bookie
 src/lib/bookie:
 	wget $(BOOKIELIB) -O /tmp/bookie_static.tar.gz
-	if [ ! -d $(WD)/src/lib/bookie ]; then \
-		mkdir $(WD)/src/lib/bookie; \
+	if [ ! -d $(WD)/src/data/bookie ]; then \
+		mkdir $(WD)/src/data/bookie; \
 	fi
-	tar -zxf /tmp/bookie_static.tar.gz -C src/lib/bookie
+	tar -zxf /tmp/bookie_static.tar.gz -C src/data/bookie
 
 .PHONY: clean_bookie
 clean_bookie:
-	rm -rf src/lib/bookie
+	rm -rf src/data/bookie
