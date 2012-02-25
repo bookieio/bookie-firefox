@@ -1,13 +1,17 @@
 const widgets = require("widget");
-const tabs = require("tabs");
+const data = require('self').data;
+const panel = require("panel");
 
-var widget = widgets.Widget({
-  id: "mozilla-link",
-  label: "Mozilla website",
-  contentURL: "http://www.mozilla.org/favicon.ico",
-  onClick: function() {
-    tabs.open("http://www.mozilla.org/");
-  }
+var popup = panel.Panel({
+    contentURL: data.url("popup.html"),
+    width:480,
+    height:300
 });
 
-console.log("The add-on is running.");
+var widget = widgets.Widget({
+    id: "bookie-link",
+    label: "Bookie",
+    contentURL: data.url("bookie/logo.16.png"),
+    panel: popup
+});
+

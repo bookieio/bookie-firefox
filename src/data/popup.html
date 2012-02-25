@@ -1,0 +1,211 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="lib/combo.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="bookie/bookie.css" type="text/css" charset="utf-8">
+        <style>
+            body.form {
+                font-family: sans-serif;
+                font-size:10pt;
+                width: 480px;
+                margin: .5em;
+                padding: .5em;
+                background-color:#fff;
+            }
+
+            body, html {
+                border:0px;
+            }
+            ul {
+                margin:0;
+                padding:0;
+            }
+
+            input, textarea {
+                background-color:#fff;
+            }
+
+            .button {
+                min-width: 6em;
+            }
+
+            #bookie_site: {
+                border: none;
+                outline: none;
+            }
+
+            #suggestions {
+                margin: 0;
+                padding: 0;
+                width: 200px;
+                margin-top: 5px;
+            }
+            #suggestions li {
+                display: inline;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                margin-right: 2px;
+                font-size: 11px;
+                line-height: 13px;
+            }
+            #suggestions a {
+                color: #444;
+                text-decoration: none;
+            }
+            #suggestions a:hover {
+                text-decoration: underline;
+            }
+
+            #content {
+                margin-left: -1000px;
+                float: left;
+            }
+        </style>
+    </head>
+    <body id="bmarkbody" class="form">
+        <div>
+            <span style="float: right;">
+                <a href="" title="Your Bookie website" target="_blank" id="bookie_site"><img src="bookie/logo.16.png" /></a>
+            </span>
+            <div class="heading">Post to Bookie</div>
+        </div>
+
+        <div id="form_overlay">
+            <form id="form" name="form">
+                <input type="hidden" id="url" name="url" />
+                <input type="hidden" id="inserted_by" name="inserted_by" />
+
+                <ul>
+                    <li><input type="text" id="description" placeholder="title" name="description" /> </li>
+                    <li><input type="text" placeholder="tags" name="tags" id="tag_filter" /></li>
+                    <li id="suggested_tags">Suggested Tags: <span id="latest_tags"></span></li>
+                    <li><textarea placeholder="notes" name="extended"
+                        id="extended" style="height: 5em;"></textarea></li>
+                    <li>
+                        <button type="submit" id="submit" class="button">Save</button>
+                        <button type="button" id="delete" class="button" style="display: none;">Delete</button>
+                    </li>
+                </ul>
+                <textarea name="content" id="content"></textarea>
+            </form>
+        </div>
+        <ul id="errors">
+        </ul>
+        <p>&nbsp;</p>
+
+        <script src="lib/combo.js"></script>
+        <script type="text/javascript">
+            YUI.GlobalConfig = {
+                combine: true,
+                base: '${combo}/combo?y/',
+                fetchCSS: false,
+                comboBase: '${combo}/combo?',
+                maxURLLength: 1500,
+                root: 'y/',
+                groups: {
+                    bookie: {
+                        combine: true,
+                        base: '${combo}/combo?b',
+                        comboBase: '${combo}/combo?',
+                        root: 'b/',
+                        fetchCSS: false,
+                        filter: 'raw',
+                        // comes from including bookie/meta.js
+                        modules: YUI_MODULES,
+                    }
+                }
+            };
+        </script>
+
+        <script src="lib/yapi.js"></script>
+        <script src="lib/yhash.js"></script>
+        <script src="lib/yindicator.js"></script>
+        <script src="lib/ymodel.js"></script>
+        <script src="lib/ytagcontrol.js"></script>
+        <script src="lib/yview.js"></script>
+        <script type="text/javascript" src="chrome.js"></script>
+
+        <script type="text/javascript">
+            YUI().use('bookie-chrome', function (Y) {
+                // start out with the suggested tags hidden
+                Y.one('#suggested_tags').hide();
+                var run = function (tab_data) {
+                    if (tab_data) {
+                        var settings = new Y.bookie.OptionsModel();
+                        // load the settings from the extension for use
+                        settings.load();
+
+                        // don't worry about loading the content of the page if we
+                        // don't have it set in our options
+                        if (settings.get('cache_content') !== 'true') {
+                            // then skip it, we don't want the added load on the
+                            // browser or the server
+                        } else {
+                            chrome.extension.onRequest.addListener(
+                                function(request, sender, sendResponse) {
+                                    if (request.id === 'from_readable') {
+                                        Y.one('#content').set('value', request.html);
+                                    }
+                                }
+                            );
+
+                            var bkg = chrome.extension.getBackgroundPage();
+                            bkg.inject_readable(function () {
+                                var c = document.getElementById('content');
+                                c.value = bkg.get_html_content();
+                            });
+                        }
+
+                        var bookmark = new Y.bookie.Bmark(Y.merge(
+                            tab_data, {
+                                api_cfg: settings.get_apicfg()
+                            }
+                        ));
+
+                        var c = new Y.bookie.chrome.Popup({
+                            settings: settings,
+                            model: bookmark
+                        });
+
+                    } else {
+                        var n = new Y.bookie.chrome.Notification({
+                            code: '9999',
+                            type: 'error',
+                            title: 'Err',
+                            message: 'Could not find a url to bookmark.'
+                        });
+                    }
+                }
+
+                // this could be fed tab info via the url
+                // usually in the case of a keyboard shortcut loading this in a
+                // new tab vs the icon popup
+                var parts = window.location.hash.substring(1).split('|');
+                var tab_data;
+                if (parts.length === 2) {
+                    var tab_data = {
+                        'url': window.atob(parts[0]),
+                        'description': window.atob(parts[1])
+                    }
+                    run(tab_data);
+                } else {
+                    // first get the windowid
+                    chrome.windows.getCurrent(function(window) {
+                        // then get the current active tab in that window
+                        chrome.tabs.query({
+                            active: true,
+                            windowId: window.id
+                        }, function (tabs) {
+                            // and use that tab to fill in out title and url
+                            var tab = tabs[0];
+                            run({
+                                url: tab.url,
+                                description: tab.title
+                            });
+                        });
+                    });
+                }
+           });
+        </script>
+    </body>
+</html>
