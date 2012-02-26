@@ -1,5 +1,5 @@
-YUI().add('bookie-chrome', function (Y) {
-    var ns = Y.namespace('bookie.chrome');
+YUI().add('bookie-firefox', function (Y) {
+    var ns = Y.namespace('bookie.firefox');
 
     /**
      * The View object to the extension popup page.
@@ -9,7 +9,7 @@ YUI().add('bookie-chrome', function (Y) {
      * @namespace bookie.chrome
      *
      */
-    ns.Popup = Y.Base.create('bookie-chrome-view', Y.View, [], {
+    ns.Popup = Y.Base.create('bookie-firefox-view', Y.View, [], {
         /**
          * By default we haven't loaded any recent tags. If we do, update this
          * so that we don't load them again.
@@ -200,7 +200,6 @@ YUI().add('bookie-chrome', function (Y) {
             } else {
                 return true;
             }
-
         },
 
         events: {
@@ -230,16 +229,10 @@ YUI().add('bookie-chrome', function (Y) {
             var valid = this._validate_settings();
 
             if (!valid) {
-                var n = new Y.bookie.chrome.Notification({
-                    code: '9999',
-                    type: 'error',
+                addon.port.emit("notify", {
                     title: 'Error',
-                    message: 'The extension settings are not valid. Please go to the options page and update them.'
+                    text: 'The extension settings are not valid. Please go to the options page and update them.'
                 });
-
-                var b = new Y.bookie.chrome.Badge();
-                b.show_error();
-
                 return;
             }
 

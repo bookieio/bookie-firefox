@@ -92,7 +92,6 @@
         </ul>
         <p>&nbsp;</p>
 
-        <!--
         <script src="combo/combo.js"></script>
         <script type="text/javascript">
             YUI.GlobalConfig = {
@@ -126,15 +125,28 @@
         <script type="text/javascript" src="firefox.js"></script>
 
         <script type="text/javascript">
-            YUI().use('bookie-chrome', function (Y) {
+            YUI().use('bookie-firefox', function (Y) {
+
+                addon.port.on("active", function(activeTab) {
+                    run({
+                        description:activeTab.description,
+                        url:activeTab.url
+                    });
+                });
+
                 // start out with the suggested tags hidden
                 Y.one('#suggested_tags').hide();
-                var run = function (tab_data) {
+
+                function run(tab_data) {
                     if (tab_data) {
                         var settings = new Y.bookie.OptionsModel();
                         // load the settings from the extension for use
                         settings.load();
 
+                        settings.set("api_username", "wafuqua");
+                        settings.set("api_key", "5ae52dbbc19b");
+
+                        /* TODO: readable content for firefox
                         // don't worry about loading the content of the page if we
                         // don't have it set in our options
                         if (settings.get('cache_content') !== 'true') {
@@ -155,6 +167,7 @@
                                 c.value = bkg.get_html_content();
                             });
                         }
+                        */
 
                         var bookmark = new Y.bookie.Bmark(Y.merge(
                             tab_data, {
@@ -162,7 +175,7 @@
                             }
                         ));
 
-                        var c = new Y.bookie.chrome.Popup({
+                        var c = new Y.bookie.firefox.Popup({
                             settings: settings,
                             model: bookmark
                         });
@@ -176,44 +189,9 @@
                         });
                     }
                 }
-
-                // this could be fed tab info via the url
-                // usually in the case of a keyboard shortcut loading this in a
-                // new tab vs the icon popup
-                var parts = window.location.hash.substring(1).split('|');
-                var tab_data;
-                if (parts.length === 2) {
-                    var tab_data = {
-                        'url': window.atob(parts[0]),
-                        'description': window.atob(parts[1])
-                    }
-                    run(tab_data);
-                } else {
-                    // first get the windowid
-                    chrome.windows.getCurrent(function(window) {
-                        // then get the current active tab in that window
-                        chrome.tabs.query({
-                            active: true,
-                            windowId: window.id
-                        }, function (tabs) {
-                            // and use that tab to fill in out title and url
-                            var tab = tabs[0];
-                            run({
-                                url: tab.url,
-                                description: tab.title
-                            });
-                        });
-                    });
-                }
-           });
+            });
         </script>
-        -->
     </body>
     <script type="text/javascript">
-        addon.port.on("active", function(title) {
-            console.log("received active");
-            console.log(title);
-            document.getElementById("description").value = title;
-        });
     </script>
 </html>
