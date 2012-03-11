@@ -127,6 +127,35 @@
         <script type="text/javascript">
             YUI().use('bookie-firefox', function (Y) {
 
+                var callbackMap = {};
+
+                Y.IO.prototype.send = function(url, options) {
+                    var callbackId = "cb" + Date.now();
+
+                    callbackMap[callbackId] = options;
+                    addon.port.emit('netrequest', {
+                        url: url,
+                        options: options,
+                        callbackId: callbackId
+                    });
+                }
+
+                addon.port.on("netresponse", function(response) {
+                    var status = response.data.status,
+                        options = callbackMap[response.callbackId],
+                        callbacks = options.on;
+
+                    if (200 <= status && status < 300 || status === 304) {
+                        callbacks.success(response.callbackId, response.data, options.arguments);
+                    } else {
+                        callbacks.failure(response.callbackId, response.data, options.arguments);
+                    }
+
+                    callbacks.complete(response.callbackId, response.data, options.arguments);
+
+                    delete callbackMap[response.callbackId];
+                });
+
                 addon.port.on("active", function(activeTab) {
                     run({
                         description:activeTab.description,
@@ -142,9 +171,6 @@
                         var settings = new Y.bookie.OptionsModel();
                         // load the settings from the extension for use
                         settings.load();
-
-                        settings.set("api_username", "wafuqua");
-                        settings.set("api_key", "5ae52dbbc19b");
 
                         /* TODO: readable content for firefox
                         // don't worry about loading the content of the page if we
