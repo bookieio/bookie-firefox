@@ -1,6 +1,47 @@
 YUI().add('bookie-firefox', function (Y) {
     var ns = Y.namespace('bookie.firefox');
 
+    // override YUI io's module to send network requests to
+    // the addonscript, since contentscripts can't make network
+    // requests
+    (function() {
+        // event data needs to be jsonable, so the callbacks will 
+        // be stripped from the options object. Store the callback 
+        // data and retrieve it via a unique id
+        var callbacks = {};
+
+        Y.IO.prototype.send = function(url, options) {
+            var id = "cb" + Date.now() + Math.random();
+
+            callbacks[id] = {
+                callbacks: options.on,
+                args: options.arguments
+            };
+
+            addon.port.emit('netrequest', {
+                url: url,
+                options: options,
+                callbackId: id
+            });
+        };
+
+        addon.port.on("netresponse", function(response) {
+            var status = response.data.status,
+                cb = callbacks[response.callbackId].callbacks,
+                args = callbacks[response.callbackId].args;
+
+            if (200 <= status && status < 300 || status === 304) {
+                cb.success(response.callbackId, response.data, args);
+            } else {
+                cb.failure(response.callbackId, response.data, args);
+            }
+
+            cb.complete(response.callbackId, response.data, args);
+
+            delete callbacks[response.callbackId];
+        });
+    })();
+
     /**
      * The View object to the extension popup page.
      *
