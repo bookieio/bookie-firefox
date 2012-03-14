@@ -40,6 +40,15 @@ YUI().add('bookie-firefox', function (Y) {
 
             delete callbacks[response.callbackId];
         });
+
+        addon.port.on("preferenceChange", function(prefs) {
+            var settings = new Y.bookie.OptionsModel();
+            for(var p in prefs) {
+                settings.set(p, prefs[p]);
+                addon.port.emit("log", "set " + p + " to " + prefs[p]);
+            }
+            settings.save();
+        });
     })();
 
     /**

@@ -4,6 +4,7 @@ const panel = require("panel");
 const tabs = require("tabs");
 const request = require("request");
 const notifications = require("notifications");
+const preferences = require("simple-prefs");
 
 var popup = panel.Panel({
     contentURL: data.url("popup.html"),
@@ -66,6 +67,21 @@ popup.port.on("netrequest", function(opts) {
     //send our request by invoking get() or post()
     r[opts.options.method.toLowerCase()]();
 });
+
+
+// when the user changes a preference, sent the preferences to 
+// the contentscript so it can save it to localstorage
+preferences.on("api_username", onPreferenceChanged);
+preferences.on("api_url", onPreferenceChanged);
+preferences.on("api_key", onPreferenceChanged);
+function onPreferenceChanged(pref) {
+    popup.port.emit("preferenceChange", {
+        api_username: preferences.prefs['api_username'],
+        api_url: preferences.prefs['api_url'],
+        api_key: preferences.prefs['api_key']
+    });
+}
+
 
 // misc helper debugging events. console.log currently doesn't work in panel content scripts
 popup.port.on("debug", function(obj) {

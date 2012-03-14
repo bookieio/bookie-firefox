@@ -5,5 +5,21 @@
     "version": "0.4", 
     "fullName": "Bookie for Firefox", 
     "id": "jid1-4tvcBv8qHhXMqw", 
-    "description": "Bookie for Firefox enables you to save and update bookmarks stored on a Bookie server instance. See http://docs.bmark.us for more information."
+    "description": "Bookie for Firefox enables you to save and update bookmarks stored on a Bookie server instance. See http://docs.bmark.us for more information.",
+    "preferences": [{
+        "name": "api_url",
+        "title": "Bookie URL",
+        "type": "string",
+        "value": "https://bmark.us"
+    },{
+        "name": "api_username",
+        "title": "Bookie account username",
+        "type": "string",
+        "value": ""
+    },{
+        "name": "api_key",
+        "title": "API key",
+        "type": "string",
+        "value": ""
+    }]
 }
