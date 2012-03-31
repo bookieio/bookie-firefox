@@ -221,12 +221,12 @@ YUI().add('bookie-firefox', function (Y) {
                 }
             }
 
-            // focus on the tag control
-            var tag_control = Y.one('.yui3-bookie-tagcontrol-item input');
-            tag_control.focus();
+            if (model.get('bid')) {
+                var delete_button = Y.one('#delete');
+                delete_button.show();
+            }
 
             this.indicator.hide();
-
         },
 
         _validate_settings: function () {
@@ -290,8 +290,10 @@ YUI().add('bookie-firefox', function (Y) {
             this.indicator = new Y.bookie.Indicator({
                 target: Y.one('#form_overlay')
             });
+            /*
             this.indicator.render();
             this.indicator.show();
+            */
 
             // bind to the event that if the model changes, check it for the
             // suggested tags to show/update the form?
