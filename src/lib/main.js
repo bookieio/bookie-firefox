@@ -1,7 +1,11 @@
 var data = require("sdk/self").data,
     widgets = require("sdk/widget"),
     tabs = require("sdk/tabs"),
-    prefs = require('sdk/simple-prefs');
+    prefs = require('sdk/simple-prefs'),
+    Request = require("sdk/request").Request,
+    Api = require('./api').Api,
+
+    api = Api(prefs.prefs);
 
 
 prefs.on("", onPrefChange);
@@ -26,6 +30,12 @@ addBookmarkPanel.on("show", function() {
         'url': tabs.activeTab.url,
         'title': tabs.activeTab.title
     });
+
+    //api.get(
+    //    prefs.prefs.api_username + '/ping',
+    //    {},
+    //    function(res) { console.log(res.text); }
+    //);
 });
 
 var widget = widgets.Widget({
