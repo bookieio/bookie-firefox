@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <!-- link rel="stylesheet" href="combo.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="lib/base.css" type="text/css" charset="utf-8" -->
+        <style>
+            body.form {
+                font-family: sans-serif;
+                font-size:10pt;
+                overflow: hidden;
+                width: 480px;
+                margin: .5em;
+                padding: .5em;
+            }
+
+            .button {
+                min-width: 6em;
+            }
+
+            #bookie_site: {
+                border: none;
+                outline: none;
+            }
+
+            #suggestions {
+                margin: 0;
+                padding: 0;
+                width: 200px;
+                margin-top: 5px;
+            }
+            #suggestions li {
+                display: inline;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                margin-right: 2px;
+                font-size: 11px;
+                line-height: 13px;
+            }
+            #suggestions a {
+                color: #444;
+                text-decoration: none;
+            }
+            #suggestions a:hover {
+                text-decoration: underline;
+            }
+
+            #content {
+                margin-left: -1000px;
+                float: left;
+            }
+        </style>
+    </head>
+    <body id="bmarkbody" class="form">
+        <div>
+            <span style="float: right;">
+                <a href="" title="Your Bookie website" target="_blank" id="bookie_site"><img src="logo.16.png" /></a>
+            </span>
+            <div class="heading">Post to Bookie</div>
+        </div>
+
+        <div id="form_overlay">
+            <form id="form" name="form">
+                <input type="hidden" id="url" name="url" />
+                <input type="hidden" id="inserted_by" name="inserted_by" />
+
+                <ul>
+                    <li><input type="text" id="description" placeholder="title" name="description" /> </li>
+                    <li><input type="text" placeholder="tags" name="tags" id="tag_filter" /></li>
+                    <li id="suggested_tags">Suggested Tags: <span id="latest_tags"></span></li>
+                    <li><textarea placeholder="notes" name="extended"
+                        id="extended" style="height: 5em;"></textarea></li>
+                    <li>
+                        <button type="submit" id="submit" class="button">Save</button>
+                        <button type="button" id="delete" class="button" style="display: none;">Delete</button>
+                    </li>
+                </ul>
+                <textarea name="content" id="content"></textarea>
+            </form>
+        </div>
+        <ul id="errors">
+        </ul>
+        <p>&nbsp;</p>
+
+        <!-- script type="text/javascript" src="combo.js"></script>
+        <script type="text/javascript" src="config.js"></script>
+
+        <script type="text/javascript" src="lib/api.js"></script>
+        <script type="text/javascript" src="lib/hash.js"></script>
+        <script type="text/javascript" src="lib/indicator.js"></script>
+        <script type="text/javascript" src="lib/model.js"></script>
+        <script type="text/javascript" src="lib/tagcontrol.js"></script>
+        <script type="text/javascript" src="lib/view.js"></script>
+        <script type="text/javascript" src="chrome.js"></script>
+        <script type="text/javascript" src="popup.js"></script -->
+    </body>
+</html>

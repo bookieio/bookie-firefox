@@ -1,0 +1,40 @@
+{
+  "name": "bookie",
+  "fullName": "Bookie",
+  "id": "jid1-zsQS9x5zIenFuw",
+  "description": "Bookie Bookmarks",
+  "author": "",
+  "license": "BSD",
+  "version": "0.1",
+  "preferences": [
+      {
+          "name": "api_url",
+          "type": "string",
+          "title": "Bookie url",
+          "value": "https://bmark.us/api/v1/"
+      },
+      {
+          "name": "api_username",
+          "type": "string",
+          "title": "Bookie username"
+      },
+      {
+          "name": "api_key",
+          "type": "string",
+          "title": "API key"
+      },
+      {
+          "name": "cache_content",
+          "type": "bool",
+          "title": "Cache Content",
+          "value": "false"
+      },
+      {
+          "name": "sync",
+          "type": "control",
+          "label": "sync",
+          "title": "Server Sync",
+          "description": "This will download information about your bookmarks from the bookie server instance into your browser. This helps us notify you when you're on a page you've already bookmarked."
+      }
+  ]
+}
