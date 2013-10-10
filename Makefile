@@ -4,10 +4,10 @@ SDKURL = https://ftp.mozilla.org/pub/mozilla.org/labs/jetpack/jetpack-sdk-latest
 BOOKIELIB = http://files.bmark.us/bookie_static.tar.gz
 
 .PHONY: all
-all: sdk bookie
+all: sdk
 
 .PHONY: clean
-clean: clean_sdk clean_bookie
+clean: clean_sdk
 
 
 sdk: sdk/bin/activate
@@ -18,16 +18,4 @@ sdk/bin/activate:
 
 .PHONY: clean_sdk
 clean_sdk:
-	rm -rf sdk/*
-
-bookie: src/lib/bookie
-src/lib/bookie:
-	wget $(BOOKIELIB) -O /tmp/bookie_static.tar.gz
-	if [ ! -d $(WD)/src/data/bookie ]; then \
-		mkdir $(WD)/src/data/bookie; \
-	fi
-	tar -zxf /tmp/bookie_static.tar.gz -C src/data/bookie
-
-.PHONY: clean_bookie
-clean_bookie:
-	rm -rf src/data/bookie
+	rm -rf sdk/
