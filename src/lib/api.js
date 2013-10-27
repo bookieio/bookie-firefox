@@ -1,4 +1,5 @@
-var Request = require("sdk/request").Request;
+var Request = require("sdk/request").Request,
+    _ = require('lodash.min.js');
 
 var Api = function(config) {
     if (!config)
@@ -9,7 +10,7 @@ var Api = function(config) {
     call = function(endpoint, params, cb) {
         let request = Request({
             url: config.api_url + endpoint,
-            content: defaultReqParams,
+            content: _.extend(defaultReqParams, params),
             onComplete: function (response) {
                 // TODO probably check 'error' here for generic handling
                 cb(response);

@@ -9,4 +9,21 @@ self.port.on("show", function (activeTab) {
 
     document.getElementById('url').value = activeTab.url;
     document.getElementById('description').value = activeTab.title;
+
+    document.getElementById('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let f = event.target;
+        self.port.emit('save_bmark', {
+            'url': f.url.value,
+            'description': f.description.value,
+            'extended': f.extended,
+            'tags': f.tag_filter.value
+        });
+    });
+
+});
+
+self.port.on('saved', function() {
+    //window.close(); this is not allowed apparently
 });
