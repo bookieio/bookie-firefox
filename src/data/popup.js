@@ -1,4 +1,4 @@
-self.port.on("show", function (activeTab) {
+self.port.on("show", function (activeTab, userConfig) {
     console.log('SHOWN');
 
     // TODO
@@ -22,6 +22,8 @@ self.port.on("show", function (activeTab) {
         });
     });
 
+    // setup link to users bmark instance page
+    document.getElementById('bookie_site').href = userConfig.bmark_url;
 });
 
 self.port.on('saved', function() {

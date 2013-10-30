@@ -28,10 +28,18 @@ var addBookmarkPanel = require("sdk/panel").Panel({
 // Send the content script a message called "show" when
 // the panel is shown.
 addBookmarkPanel.on('show', function() {
-    addBookmarkPanel.port.emit('show', {
-        'url': tabs.activeTab.url,
-        'title': tabs.activeTab.title
-    });
+    let user_url = prefs.prefs.api_url.replace(/api\/v1\/?/, '')
+
+    addBookmarkPanel.port.emit(
+        'show',
+        {
+            'url': tabs.activeTab.url,
+            'title': tabs.activeTab.title
+        },
+        {
+            'bmark_url': user_url + prefs.prefs.api_username
+        }
+    );
 });
 
 // Handle saving a new bookmark.
