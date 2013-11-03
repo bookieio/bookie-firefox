@@ -7,6 +7,11 @@ var data = require("sdk/self").data,
 
     api = Api(prefs.prefs);
 
+const BMARK_SUCCESS = 'bmark_success';
+const BMARK_ERROR = 'bmark_error';
+const BMARK_REMOVED = 'bmark_removed';
+const BMARK_EXISTS = 'bmark_exists';
+
 
 prefs.on("", onPrefChange);
 prefs.on('sync', function() {
@@ -56,6 +61,7 @@ addBookmarkPanel.port.on('save_bmark', function (bmark) {
                 addBookmarkPanel.destroy();
 
                 addBookmarkPanel.port.emit('saved');
+                widget.port.emit(BMARK_SUCCESS);
             };
         }
     );
@@ -65,7 +71,8 @@ addBookmarkPanel.port.on('save_bmark', function (bmark) {
 var widget = widgets.Widget({
   id: "bookie-widget",
   label: "Create Bookie Bookmark",
-  contentURL: data.url('favicon.ico'),
+  contentURL: data.url('widget_html.html'),
+  contentScriptFile: data.url('widget_script.js'),
   panel: addBookmarkPanel
 });
 
