@@ -1,19 +1,34 @@
 var Request = require("sdk/request").Request,
     _ = require('lodash.min.js');
 
-var Api = function(config) {
+
+var ApiBase = function(config) {
     if (!config)
-        return false;
+        throw('Api configuration data is required.');
 
     var defaultReqParams = {'api_key': encodeURIComponent(config.api_key)};
 
-    call = function(endpoint, params, cb) {
+    var call = function(endpoint, params, cb, scope) {
+
+        if (scope) {
+          if (cb.success) {
+              cb.success.bind(scope);
+          }
+
+          if (cb.failure) {
+              cb.failure.bind(scope);
+          }
+        }
+
         let request = Request({
             url: config.api_url + endpoint,
             content: _.extend(defaultReqParams, params),
             onComplete: function (response) {
-                // TODO probably check 'error' here for generic handling
-                cb(response);
+                console.log(response);
+                // @ToDo Check the response for a status code != 200 or if the json
+                // body has an error property in it. If so, this failed and we
+                // should call cb.failure.
+                cb.success(response);
             }
         });
 
@@ -23,14 +38,13 @@ var Api = function(config) {
         return request;
     };
 
-    get = function(endpoint, params, cb) {
-        call(endpoint, params, cb).get();
+    var get = function(endpoint, params, cb, scope) {
+        call(endpoint, params, cb, scope).get();
     };
 
-    post = function(endpoint, params, cb) {
-        call(endpoint, params, cb).post();
+    var post = function(endpoint, params, cb, scope) {
+        call(endpoint, params, cb, scope).post();
     };
-
 
     // expose public things
     return {
@@ -39,4 +53,22 @@ var Api = function(config) {
     };
 };
 
-exports.Api = Api;
+
+exports.BookieApi = function(config) {
+
+    var _api = ApiBase(config);
+
+    var calls = {
+        save: function(tab_data, callbacks, bind_scope) {
+            var api_url_append = "/bmark";
+            _api.post(api_url_append, tab_data, callbacks, bind_scope);
+        },
+
+        ping: function(callbacks, bind_scope) {
+            var api_url_append = "/ping";
+            _api.get(api_url_append, callbacks, bind_scope);
+        }
+    };
+
+    return calls;
+};
