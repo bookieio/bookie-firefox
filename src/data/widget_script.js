@@ -1,3 +1,4 @@
+/*jshint moz:true*/
 var icon = document.getElementById('icon');
 
 // TODO
@@ -22,4 +23,3 @@ self.port.on('bmark_exists', function() {
     console.log('EXISTS');
     icon.style.backgroundColor = 'blue';
 });
-

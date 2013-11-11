@@ -1,3 +1,4 @@
+/*jshint moz:true*/
 var Request = require("sdk/request").Request,
     _ = require('lodash.min.js');
 

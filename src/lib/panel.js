@@ -1,3 +1,4 @@
+/*jshint moz:true*/
 var data = require("sdk/self").data,
     tabs = require("sdk/tabs"),
     Panel = require("sdk/panel").Panel;
