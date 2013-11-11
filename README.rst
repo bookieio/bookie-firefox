@@ -2,6 +2,13 @@ Bookie-Firefox
 ===============
 The goal is to setup an extension that enables using Bookie with Firefox.
 
+Current development release
+----------------------------
+You can test the current build by heading to http://files.bmark.us/bookie.xpi.
+Note that this is alpha quality and most functions don't work. Currently you
+get a widget in the add-on bar and can save a bookmark once you've set your
+preferences.
+
 Setting up
 ----------
 Once you check out from git, you'll need to get the external dependencies, the
