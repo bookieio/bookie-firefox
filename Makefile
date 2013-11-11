@@ -19,3 +19,11 @@ sdk/bin/activate:
 .PHONY: clean_sdk
 clean_sdk:
 	rm -rf sdk/
+
+.PHONY: test
+test: sdk
+	cd src && cfx test && cd ../
+
+.PHONY: run
+run: sdk
+	cd src && cfx run && cd ../

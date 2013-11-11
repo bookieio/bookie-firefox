@@ -4,7 +4,7 @@ The goal is to setup an extension that enables using Bookie with Firefox.
 
 Setting up
 ----------
-Once you check out from git, you'll need to get the external depenencies, the
+Once you check out from git, you'll need to get the external dependencies, the
 firefox sdk and the Bookie static library collection. You can get both of
 these using the Makefile.
 
@@ -32,3 +32,22 @@ out again.
     source bin/activate
     cd ../
 
+
+Running the tests
+-----------------
+The tests require that the sdk be activated. You can run them with the ``make
+test`` command.
+
+
+Testing the extension
+----------------------
+You can load a new Firefox window with the extension loaded with ``make run``.
+This will use the sdk to launch the Firefox instance and can be used for dev
+and qa work.
+
+
+Known limitations/issues
+------------------------
+
+- Cannot ping/validate your api preferences since we're using a simple-pref
+  modules for preferences

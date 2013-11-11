@@ -3,26 +3,50 @@
         <!-- link rel="stylesheet" href="combo.css" type="text/css" charset="utf-8">
         <link rel="stylesheet" href="lib/base.css" type="text/css" charset="utf-8" -->
         <style>
+
+            #bmarkbody {
+                background-color: #FFF;
+            }
+
+            .heading {
+                font-size: 1.6em;
+                color: #363d52;
+                font-weight: bold;
+            }
+
             .form {
                 font-family: sans-serif;
                 font-size:10pt;
                 overflow: hidden;
-                /*width: 480px;
-                margin: .5em;
-                */
-                padding: .5em;
+                text-align: left;
             }
 
             .form ul {
                 margin: 0px;
+                padding: 0px;
             }
 
             .form ul li {
                 list-style-type: none;
+                padding: .2em 0;
             }
 
-            .button {
+            .form input, .form textarea {
+                width: 300px;
+                border: 1px solid #CCC;
+                font-size: 1em;
+            }
+
+            .form #selected_tags {
+                display: none;
+            }
+
+            button {
                 min-width: 6em;
+                text-align: center;
+                line-height: 2.0
+                cursor: auto;
+                border-radius: 4px;
             }
 
             #bookie_site: {
@@ -30,10 +54,15 @@
                 outline: none;
             }
 
+            /** Style the suggestion results when they arrive **/
+            #suggested_tags {
+                display: none;
+                color: #363d52;
+            }
             #suggestions {
                 margin: 0;
                 padding: 0;
-                width: 200px;
+                width: 300px;
                 margin-top: 5px;
             }
             #suggestions li {
@@ -75,7 +104,7 @@
                 <ul>
                     <li><input type="text" id="description" placeholder="title" name="description" /> </li>
                     <li><input type="text" placeholder="tags" name="tags" id="tag_filter" /></li>
-                    <!-- li id="suggested_tags">Suggested Tags: <span id="latest_tags"></span></li -->
+                    <li id="suggested_tags">Suggested Tags: <span id="latest_tags"></span></li>
                     <li><textarea placeholder="notes" name="extended" id="extended" style="height: 5em;"></textarea></li>
                     <li>
                         <button type="submit" id="submit" class="button">Save</button>
