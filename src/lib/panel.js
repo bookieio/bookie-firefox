@@ -17,8 +17,13 @@ exports.init = function(prefs, api) {
 
     var addBookmarkPanel = Panel({
         contentURL: data.url("popup.html"),
-        contentScriptFile: data.url("popup.js")
+        contentScriptFile: data.url("popup.js"),
+        width: 600
     });
+    // @ToDo
+    // On show we can do the work to check if the user has bookmarked this
+    // page before and load the content. This needs to go through the api to
+    // get the current bookmark data or load the default content.
 
     // Send the content script a message called "show" when
     // the panel is shown.

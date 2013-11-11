@@ -27,3 +27,11 @@ test: sdk
 .PHONY: run
 run: sdk
 	cd src && cfx run && cd ../
+
+.PHONY: build
+build: sdk
+	cd src && cfx xpi && mv bookie.xpi ../ && cd ../
+
+.PHONY: upload
+upload: build
+	s3cp.py --bucket files.bmark.us --public bookie.xpi
