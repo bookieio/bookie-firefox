@@ -1,9 +1,7 @@
-var prefs = require('sdk/simple-prefs'),
-    BookieApi = require('./api').BookieApi,
-    api = BookieApi(prefs.prefs);
-
-
-var init = function() {
+var preferenceData = {};
+console.log('preferences.js');
+console.log(preferenceData);
+var init = function(prefs, api) {
     prefs.on("", onPrefChange);
     prefs.on('sync', function() {
         // TODO /:username/extension/sync
@@ -24,9 +22,16 @@ var init = function() {
                     prefName + " was just changed and didn't help.");
             }
         }, this);
+        // Update the preferences.
+        console.log('updating preferences');
+        console.log(prefs.prefs);
+        preferenceData = prefs.prefs;
     }
 
-    return prefs.prefs;
+    preferenceData = prefs.prefs;
+    console.log('returning pref.js');
+    console.log(preferenceData);
+    return preferenceData;
 };
 
 

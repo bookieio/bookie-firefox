@@ -1,13 +1,19 @@
 var data = require("sdk/self").data,
     tabs = require("sdk/tabs"),
-    Panel = require("sdk/panel").Panel,
-    BookieApi = require('./api').BookieApi,
-    preferences = require('./preferences'),
-
-    api = BookieApi(prefs.prefs);
+    Panel = require("sdk/panel").Panel;
 
 
-export.init = function(prefs) {
+const BMARK_SUCCESS = 'bmark_success';
+const BMARK_ERROR = 'bmark_error';
+const BMARK_REMOVED = 'bmark_removed';
+const BMARK_EXISTS = 'bmark_exists';
+
+
+
+exports.init = function(prefs, api) {
+    console.log('panel init');
+    console.log(prefs);
+    console.log(api);
 
     var addBookmarkPanel = Panel({
         contentURL: data.url("popup.html"),
@@ -17,6 +23,10 @@ export.init = function(prefs) {
     // Send the content script a message called "show" when
     // the panel is shown.
     addBookmarkPanel.on('show', function() {
+        console.log('panel show');
+        console.log(prefs);
+        console.log(tabs.activeTab);
+
         let user_url = prefs.api_url.replace(/api\/v1\/?/, '');
 
         addBookmarkPanel.port.emit(
@@ -33,6 +43,8 @@ export.init = function(prefs) {
 
     // Handle saving a new bookmark.
     addBookmarkPanel.port.on('save_bmark', function (bmark) {
+        console.log('save bookmark');
+        console.log(prefs);
         api.save(
             bmark, {
                 success: function(res) {

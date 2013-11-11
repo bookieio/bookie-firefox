@@ -31,3 +31,4 @@ out again.
     cd sdk
     source bin/activate
     cd ../
+

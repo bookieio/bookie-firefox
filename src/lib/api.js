@@ -21,8 +21,8 @@ var ApiBase = function(config) {
         }
 
         let request = Request({
-            url: config.api_url + endpoint,
-            content: _.extend(defaultReqParams, params),
+            url: config.api_url + config.api_username + endpoint + "?api_key=" + config.api_key,
+            content: params,
             onComplete: function (response) {
                 console.log(response);
                 // @ToDo Check the response for a status code != 200 or if the json
