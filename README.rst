@@ -9,6 +9,10 @@ Note that this is alpha quality and most functions don't work. Currently you
 get a widget in the add-on bar and can save a bookmark once you've set your
 preferences.
 
+We've started to submit the extension to Mozilla for review at:
+
+https://addons.mozilla.org/en-US/firefox/addon/bookie/
+
 Setting up
 ----------
 Once you check out from git, you'll need to get the external dependencies, the
