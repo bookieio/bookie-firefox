@@ -3,13 +3,13 @@ var Request = require("sdk/request").Request,
     _ = require('lodash.min.js');
 
 
-var ApiBase = function(config) {
+var ApiBase = function (config) {
     if (!config)
         throw('Api configuration data is required.');
 
     var defaultReqParams = {'api_key': encodeURIComponent(config.api_key)};
 
-    var call = function(endpoint, params, cb, scope) {
+    var call = function (endpoint, params, cb, scope) {
 
         if (scope) {
           if (cb.success) {
@@ -43,11 +43,11 @@ var ApiBase = function(config) {
         return request;
     };
 
-    var get = function(endpoint, params, cb, scope) {
+    var get = function (endpoint, params, cb, scope) {
         call(endpoint, params, cb, scope).get();
     };
 
-    var post = function(endpoint, params, cb, scope) {
+    var post = function (endpoint, params, cb, scope) {
         call(endpoint, params, cb, scope).post();
     };
 
@@ -59,17 +59,21 @@ var ApiBase = function(config) {
 };
 
 
-exports.BookieApi = function(config) {
+exports.BookieApi = function (config) {
 
     var _api = ApiBase(config);
 
     var calls = {
-        save: function(tab_data, callbacks, bind_scope) {
+        bmark: function (hash_id, callbacks, bind_scope) {
+            var api_url_append = "/bmark/" + hash_id;
+            _api.get(api_url_append, {}, callbacks, bind_scope);
+        },
+        save: function (tab_data, callbacks, bind_scope) {
             var api_url_append = "/bmark";
             _api.post(api_url_append, tab_data, callbacks, bind_scope);
         },
 
-        ping: function(callbacks, bind_scope) {
+        ping: function (callbacks, bind_scope) {
             var api_url_append = "/ping";
             _api.get(api_url_append, {}, callbacks, bind_scope);
         }

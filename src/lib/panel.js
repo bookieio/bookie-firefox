@@ -1,7 +1,8 @@
 /*jshint moz:true*/
 var data = require("sdk/self").data,
     tabs = require("sdk/tabs"),
-    Panel = require("sdk/panel").Panel;
+    Panel = require("sdk/panel").Panel,
+    hash_url = require("./hash").hash_url;
 
 
 const BMARK_SUCCESS = 'bmark_success';
@@ -35,7 +36,7 @@ exports.init = function(prefs, api) {
                 var isError = response.json.error;
 
                 if (isError) {
-                    msg = response.json.error
+                    msg = response.json.error;
                 } else {
                     msg = null;
                 }
@@ -46,6 +47,23 @@ exports.init = function(prefs, api) {
                 console.log(response);
                 console.log(response.responseText);
                 addBookmarkPanel.port.emit('ping', 'Error making ping request.');
+            }
+        }, this);
+
+    };
+
+    var fetch_bmark = function(api, hash_id) {
+        api.bmark(hash_id, {
+            success: function(response) {
+                console.log('fetch bmark success');
+                if (response.json.bmark) {
+                    addBookmarkPanel.port.emit('bmark_data',
+                                               response.json.bmark);
+                }
+            },
+            failure: function(response) {
+                console.log('fetch bmark error');
+                console.log(response);
             }
         }, this);
 
@@ -70,19 +88,27 @@ exports.init = function(prefs, api) {
         // Make the ping to check prefs for the user.
        ping_check_pref(prefs, api);
 
-        addBookmarkPanel.port.emit(
-            'show',
-            {
-                'url': tabs.activeTab.url,
-                'title': tabs.activeTab.title
-            },
-            {
-                'bmark_url': user_url + prefs.api_username
-            }
-        );
+       // TODO
+       // also want to pull the tabs content if the
+       // appropriate user option is set
+       console.log("url of active tab is " + tabs.activeTab.url);
+       console.log("title of active tab is " + tabs.activeTab.title);
+
+       addBookmarkPanel.port.emit('show', {
+           'bmark_url': user_url + prefs.api_username
+       });
+
+       addBookmarkPanel.port.emit('bmark_data', {
+           description: tabs.activeTab.title,
+           url: tabs.activeTab.url
+       });
+
+       // Now let's see if the user has bookmarked this before.
+       console.log('hashing url');
+       var hash_id = hash_url(tabs.activeTab.url);
+       console.log(hash_id);
+       fetch_bmark(api, hash_id);
     });
-
-
 
     // Handle saving a new bookmark.
     addBookmarkPanel.port.on('save_bmark', function (bmark) {

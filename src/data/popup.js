@@ -6,22 +6,53 @@
 
 */
 
-self.port.on("show", function (activeTab, userConfig) {
+/**
+ * Given a set of bmark data, update the form UI with the information.
+ *
+ * @event bmark-data
+ * @param {Object} data The bmark data such as url, title, etc.
+ *
+ */
+self.port.on('bmark_data', function (data) {
+    console.log('bmark_data');
+    console.log(data);
+    if (data.url) {
+        document.getElementById('url').value = data.url;
+    }
+    if (data.tags) {
+        var tag_str = "";
+        data.tags.forEach(function (tag) {
+            tag_str += tag.name + ' ';
+        });
+        document.getElementById('tag_filter').value = tag_str;
+    }
+    if (data.description) {
+        document.getElementById('description').value = data.description;
+    }
+    if (data.extended) {
+        document.getElementById('extended').value = data.extended;
+    }
+});
+
+
+/**
+ * When the widget is clicked on, the panel is shown and this contentscript is
+ * loaded to deal with panel related DOM manipulation.
+ *
+ * @event show
+ * @param {Object} userConfig Some user specific data such as the user's
+ * bookie url.
+ *
+ */
+
+self.port.on("show", function (userConfig) {
     console.log('SHOWN');
 
-    // TODO
-    // also want to pull the tabs content if the
-    // appropriate user option is set
-    console.log("url of active tab is " + activeTab.url);
-    console.log("title of active tab is " + activeTab.title);
+    var form = document.getElementById('form');
+    form.addEventListener('submit', function(ev) {
+        ev.preventDefault();
 
-    document.getElementById('url').value = activeTab.url;
-    document.getElementById('description').value = activeTab.title;
-
-    document.getElementById('form').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        let f = event.target;
+        let f = ev.target;
         self.port.emit('save_bmark', {
             'url': f.url.value,
             'description': f.description.value,
@@ -34,8 +65,14 @@ self.port.on("show", function (activeTab, userConfig) {
     document.getElementById('bookie_site').href = userConfig.bmark_url;
 });
 
+
+
+
+
 self.port.on('saved', function() {
     //window.close(); this is not allowed apparently
+    //@ToDo store the hash of the saved bookmark into the localstorage or some
+    //storage to track we have bookmarked this beore?
 });
 
 /**
