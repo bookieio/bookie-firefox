@@ -1,12 +1,12 @@
-var preferenceData = {};
+var storage = require('./storage').Storage(),
+    preferenceData = {};
+
 console.log('preferences.js');
 console.log(preferenceData);
+
 var init = function(prefs, api) {
     prefs.on("", onPrefChange);
-    prefs.on('sync', function() {
-        // TODO /:username/extension/sync
-        console.log('SYNC IT');
-    });
+    prefs.on('sync', onSyncBmarks);
 
     // TODO
     // hook into /api/v1/{username}/ping to check settings
@@ -26,6 +26,19 @@ var init = function(prefs, api) {
         console.log('updating preferences');
         console.log(prefs.prefs);
         preferenceData = prefs.prefs;
+    }
+
+    function onSyncBmarks() {
+        console.log('SYNC IT');
+        api.sync({
+            success: function(resp) {
+                storage.save('hash_list', resp.json.hash_list);
+            },
+            failure: function(resp) {
+                console.log('sync fail');
+                console.log(resp.json);
+            }
+        }, this);
     }
 
     preferenceData = prefs.prefs;

@@ -76,6 +76,11 @@ exports.BookieApi = function (config) {
         ping: function (callbacks, bind_scope) {
             var api_url_append = "/ping";
             _api.get(api_url_append, {}, callbacks, bind_scope);
+        },
+
+        sync: function (callbacks, bind_scope) {
+            var api_url_append = "/extension/sync";
+            _api.get(api_url_append, {}, callbacks, bind_scope);
         }
     };
 
