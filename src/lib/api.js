@@ -21,11 +21,15 @@ var ApiBase = function(config) {
           }
         }
 
-        let request = Request({
+        let request = new Request({
             url: config.api_url + config.api_username + endpoint + "?api_key=" + config.api_key,
             content: params,
             onComplete: function (response) {
+                console.log('onComplete ajax call');
                 console.log(response);
+                console.log(response.status);
+                console.log(response.statusText);
+                console.log(response.json);
                 // @ToDo Check the response for a status code != 200 or if the json
                 // body has an error property in it. If so, this failed and we
                 // should call cb.failure.
@@ -67,7 +71,7 @@ exports.BookieApi = function(config) {
 
         ping: function(callbacks, bind_scope) {
             var api_url_append = "/ping";
-            _api.get(api_url_append, callbacks, bind_scope);
+            _api.get(api_url_append, {}, callbacks, bind_scope);
         }
     };
 

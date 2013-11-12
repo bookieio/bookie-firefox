@@ -10,7 +10,6 @@ const BMARK_REMOVED = 'bmark_removed';
 const BMARK_EXISTS = 'bmark_exists';
 
 
-
 exports.init = function(prefs, api) {
     console.log('panel init');
     console.log(prefs);
@@ -19,8 +18,41 @@ exports.init = function(prefs, api) {
     var addBookmarkPanel = Panel({
         contentURL: data.url("popup.html"),
         contentScriptFile: data.url("popup.js"),
-        width: 600
+        width: 600,
+        height: 300
     });
+
+    /**
+     * Make ping request to check configuration settings on panel show.
+     *
+     * @method ping_check_prefs
+     *
+     */
+    var ping_check_pref = function(prefs, api) {
+        api.ping({
+            success: function(response) {
+                console.log('successful ping');
+                var isError = response.json.error;
+
+                if (isError) {
+                    msg = response.json.error
+                } else {
+                    msg = null;
+                }
+                addBookmarkPanel.port.emit('ping', msg);
+            },
+            failure: function(response) {
+                console.log('failure ping');
+                console.log(response);
+                console.log(response.responseText);
+                addBookmarkPanel.port.emit('ping', 'Error making ping request.');
+            }
+        }, this);
+
+    };
+
+
+
     // @ToDo
     // On show we can do the work to check if the user has bookmarked this
     // page before and load the content. This needs to go through the api to
@@ -35,6 +67,9 @@ exports.init = function(prefs, api) {
 
         let user_url = prefs.api_url.replace(/api\/v1\/?/, '');
 
+        // Make the ping to check prefs for the user.
+       ping_check_pref(prefs, api);
+
         addBookmarkPanel.port.emit(
             'show',
             {
@@ -46,6 +81,8 @@ exports.init = function(prefs, api) {
             }
         );
     });
+
+
 
     // Handle saving a new bookmark.
     addBookmarkPanel.port.on('save_bmark', function (bmark) {

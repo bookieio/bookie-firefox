@@ -23,3 +23,10 @@ self.port.on('bmark_exists', function() {
     console.log('EXISTS');
     icon.style.backgroundColor = 'blue';
 });
+
+console.log('Widget Script');
+console.log(self);
+console.log(self.prototype);
+console.log(self.panel);
+
+

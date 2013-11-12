@@ -1,3 +1,11 @@
+/*jshint moz:true*/
+
+/**
+    This script is used with the panel as it's contentscript and had access to
+    the html in the panel.
+
+*/
+
 self.port.on("show", function (activeTab, userConfig) {
     console.log('SHOWN');
 
@@ -28,4 +36,28 @@ self.port.on("show", function (activeTab, userConfig) {
 
 self.port.on('saved', function() {
     //window.close(); this is not allowed apparently
+});
+
+/**
+ * If the ping request was successfull or unsuccessful, update the dom to
+ * represent it.
+ *
+ * @event ping
+ *
+ */
+self.port.on('ping', function(error_msg) {
+    console.log('Ping Error Message');
+    console.log(error_msg);
+
+    var errors = document.querySelector('#errors');
+
+    if (error_msg) {
+        msg = "Attempted to ping the server but got an error: '" + error_msg;
+        msg += "'<br />Please check your api url, username, and api_key settings";
+        errors.innerHTML = msg;
+        errors.className = '';
+    } else {
+        errors.innerHTML = '';
+        errors.className = 'hidden';
+    }
 });

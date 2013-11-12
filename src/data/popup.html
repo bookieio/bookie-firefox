@@ -15,6 +15,10 @@
                 font-weight: bold;
             }
 
+            .hidden {
+                display: none;
+            }
+
             .form {
                 font-family: sans-serif;
                 font-size:10pt;
@@ -48,6 +52,13 @@
                 line-height: 2.0
                 cursor: auto;
                 border-radius: 4px;
+            }
+
+            #errors {
+                color: #900;
+                border: 1px solid #900;
+                background-color: #FF0;
+                padding: .2em .5em;
             }
 
             #bookie_site: {
@@ -116,8 +127,8 @@
             </form>
         </div>
 
-        <ul id="errors">
-        </ul>
+        <div id="errors" class="hidden">
+        </div>
 
         <p>&nbsp;</p>
     </body>
