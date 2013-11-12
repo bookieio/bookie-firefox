@@ -1,6 +1,6 @@
 /*jshint moz:true*/
 var Request = require("sdk/request").Request,
-    _ = require('lodash.min.js');
+    _ = require('lodash.min');
 
 
 var ApiBase = function (config) {
