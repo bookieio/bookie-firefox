@@ -1,7 +1,6 @@
 WD:=$(shell pwd)
 
 SDKURL = https://ftp.mozilla.org/pub/mozilla.org/labs/jetpack/jetpack-sdk-latest.zip
-BOOKIELIB = http://files.bmark.us/bookie_static.tar.gz
 
 .PHONY: all
 all: sdk
