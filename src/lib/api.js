@@ -1,5 +1,5 @@
 /*jshint moz:true*/
-var Request = require("sdk/request").Request,
+var Request = require("./request").Request,
     _ = require('lodash.min');
 
 
@@ -51,8 +51,13 @@ var ApiBase = function (config) {
         call(endpoint, params, cb, scope).post();
     };
 
+    var delete_call = function (endpoint, params, cb, scope) {
+        call(endpoint, params, cb, scope).delete();
+    };
+
     // expose public things
     return {
+        delete: delete_call,
         get: get,
         post: post
     };
@@ -67,6 +72,10 @@ exports.BookieApi = function (config) {
         bmark: function (hash_id, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + hash_id;
             _api.get(api_url_append, {}, callbacks, bind_scope);
+        },
+        remove: function (hash_id, callbacks, bind_scope) {
+            var api_url_append = "/bmark/" + hash_id;
+            _api.delete(api_url_append, {}, callbacks, bind_scope);
         },
         save: function (tab_data, callbacks, bind_scope) {
             var api_url_append = "/bmark";

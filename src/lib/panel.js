@@ -132,5 +132,26 @@ exports.init = function(prefs, api) {
         );
     });
 
+    /**
+     * Send a request to the server to remove the bookmark from the system.
+     *
+     * @event del_bmark
+     * @param {String} hash_id
+     *
+     */
+    addBookmarkPanel.port.on('del_bmark', function(data) {
+        console.log('del bmark');
+        console.log(data);
+        api.remove(data.hash_id, {
+            success: function (response) {
+                console.log(response.json);
+                addBookmarkPanel.destroy();
+            },
+            failure: function(response) {
+                console.log(response.json.error);
+            }
+        });
+    });
+
     return addBookmarkPanel;
 };

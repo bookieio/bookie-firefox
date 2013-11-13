@@ -10,15 +10,25 @@
  * Given a set of bmark data, update the form UI with the information.
  *
  * @event bmark-data
- * @param {Object} data The bmark data such as url, title, etc.
+ * @param {Object} data The bmark data such as hash_id, url, title, etc.
  *
  */
 self.port.on('bmark_data', function (data) {
     console.log('bmark_data');
     console.log(data);
-    if (data.url) {
-        document.getElementById('url').value = data.url;
+    var del = document.getElementById('delete');
+    if (data.hash_id) {
+        document.getElementById('hash_id').value = data.hash_id;
+
+        // Show the delete button as an option.
+        del.className = del.className.replace('hidden', '');
+    } else {
+        var isHidden = del.className.indexOf('hidden') !== -1;
+        if (!isHidden) {
+            del.className = del.className + " hidden";
+        }
     }
+
     if (data.tags) {
         var tag_str = "";
         data.tags.forEach(function (tag) {
@@ -26,9 +36,11 @@ self.port.on('bmark_data', function (data) {
         });
         document.getElementById('tag_filter').value = tag_str;
     }
+
     if (data.description) {
         document.getElementById('description').value = data.description;
     }
+
     if (data.extended) {
         document.getElementById('extended').value = data.extended;
     }
@@ -61,12 +73,21 @@ self.port.on("show", function (userConfig) {
         });
     });
 
+
+    var del = document.getElementById('delete');
+    del.addEventListener('click', function(ev) {
+        // Grab the hash_id of the url in order to remove it.
+        var hash_id = document.getElementById("hash_id");
+        console.log('hash id field');
+        console.log(hash_id.value);
+        self.port.emit('del_bmark', {
+            hash_id: hash_id.value
+        });
+    });
+
     // setup link to users bmark instance page
     document.getElementById('bookie_site').href = userConfig.bmark_url;
 });
-
-
-
 
 
 self.port.on('saved', function() {
