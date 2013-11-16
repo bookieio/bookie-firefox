@@ -16,6 +16,7 @@
 self.port.on('bmark_data', function (data, last) {
     console.log('bmark_data');
     console.log(data);
+
     var isHidden,
         del = document.getElementById('delete');
 
@@ -26,9 +27,6 @@ self.port.on('bmark_data', function (data, last) {
 
     // If it's an existing bmark we'll have a hash_id to id this bmark.
     if (data.hash_id) {
-        document.getElementById('hash_id').value = data.hash_id;
-
-        // Show the delete button as an option.
         del.className = del.className.replace('hidden', '');
     } else {
        isHidden = del.className.indexOf('hidden') !== -1;
@@ -36,6 +34,7 @@ self.port.on('bmark_data', function (data, last) {
             del.className = del.className + " hidden";
         }
     }
+    document.getElementById('hash_id').value = data.hash_id;
 
     if (data.tags) {
         var tag_str = "";

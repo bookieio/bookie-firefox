@@ -62,28 +62,25 @@ exports.init = function(prefs, api) {
     };
 
     var fetch_bmark = function(api, hash_id) {
-        api.bmark(hash_id, {
-            success: function(response) {
-                console.log('fetch bmark success');
-                if (response.json.bmark) {
+        // don't waste a call if this is a blank new tab
+        // hash '4fa72d735a519e' == url 'about:newtab'
+        if (hash_id !== '4fa72d735a519e') {
+            api.bmark(hash_id, {
+                success: function(response) {
+                    console.log('fetch bmark success');
                     addBookmarkPanel.port.emit('bmark_data',
                                                response.json.bmark);
 
                     addBookmarkPanel._widget.port.emit(BMARK_EXISTS);
-
-                } else if (response.json.last) {
+                },
+                failure: function(response) {
                     addBookmarkPanel.port.emit('bmark_data',
                                                {},
                                                response.json.last);
                     addBookmarkPanel._widget.port.emit(BMARK_RESET);
                 }
-            },
-            failure: function(response) {
-                console.log('fetch bmark error');
-                console.log(response);
-            }
-        }, this);
-
+            }, this);
+        }
     };
 
 
@@ -102,7 +99,7 @@ exports.init = function(prefs, api) {
 
         let user_url = prefs.api_url.replace(/api\/v1\/?/, '');
 
-        // Make the ping to check prefs for the user.
+       // Make the ping to check prefs for the user.
        ping_check_pref(prefs, api);
 
        // TODO
@@ -115,9 +112,13 @@ exports.init = function(prefs, api) {
            'bmark_url': user_url + prefs.api_username
        });
 
-       console.log('Tab Data');
-       console.log(tabs.activeTab.url);
+       // TODO
+       // also want to pull the tabs content if the
+       // appropriate user option is set
        addBookmarkPanel.port.emit('bmark_data', {
+           tags: [],
+           hash_id: '',
+           extended: '',
            description: tabs.activeTab.title,
            url: tabs.activeTab.url
        });
