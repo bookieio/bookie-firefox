@@ -9,6 +9,7 @@ const BMARK_SUCCESS = 'bmark_success';
 const BMARK_ERROR = 'bmark_error';
 const BMARK_REMOVED = 'bmark_removed';
 const BMARK_EXISTS = 'bmark_exists';
+const BMARK_RESET = 'icon_reset';
 
 
 exports.init = function(prefs, api) {
@@ -22,6 +23,10 @@ exports.init = function(prefs, api) {
         width: 600,
         height: 300
     });
+
+    // Watch the tab for activate and show the + icon if the url has been
+    // bookmarked.
+    // @TODO
 
     addBookmarkPanel.bindWidget = function(widget) {
       this._widget = widget;
@@ -63,11 +68,14 @@ exports.init = function(prefs, api) {
                 if (response.json.bmark) {
                     addBookmarkPanel.port.emit('bmark_data',
                                                response.json.bmark);
+
+                    addBookmarkPanel._widget.port.emit(BMARK_EXISTS);
+
                 } else if (response.json.last) {
                     addBookmarkPanel.port.emit('bmark_data',
                                                {},
                                                response.json.last);
-
+                    addBookmarkPanel._widget.port.emit(BMARK_RESET);
                 }
             },
             failure: function(response) {

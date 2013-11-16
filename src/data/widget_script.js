@@ -2,7 +2,8 @@
 var icon = document.getElementById('icon');
 var normal = 'images/logo.16.png',
     green = 'images/logo.16.green.png',
-    red = 'images/logo.16.red.png';
+    red = 'images/logo.16.red.png',
+    plus = 'images/logo.16.plus.png';
 
 // TODO
 // setting background color doesn't work as it does
@@ -37,7 +38,7 @@ self.port.on('bmark_removed', function() {
 
 self.port.on('bmark_exists', function() {
     console.log('EXISTS');
-    icon.style.backgroundColor = 'blue';
+    icon.src=plus;
 });
 
 
