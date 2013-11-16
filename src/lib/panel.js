@@ -86,28 +86,28 @@ exports.init = function(prefs, api) {
         let user_url = prefs.api_url.replace(/api\/v1\/?/, '');
 
         // Make the ping to check prefs for the user.
-       ping_check_pref(prefs, api);
+        ping_check_pref(prefs, api);
 
-       // TODO
-       // also want to pull the tabs content if the
-       // appropriate user option is set
-       console.log("url of active tab is " + tabs.activeTab.url);
-       console.log("title of active tab is " + tabs.activeTab.title);
+        console.log("url of active tab is " + tabs.activeTab.url);
+        console.log("title of active tab is " + tabs.activeTab.title);
 
-       addBookmarkPanel.port.emit('show', {
-           'bmark_url': user_url + prefs.api_username
-       });
+        addBookmarkPanel.port.emit('show', {
+            'bmark_url': user_url + prefs.api_username
+        });
 
-       addBookmarkPanel.port.emit('bmark_data', {
-           description: tabs.activeTab.title,
-           url: tabs.activeTab.url
-       });
+        // TODO
+        // also want to pull the tabs content if the
+        // appropriate user option is set
+        addBookmarkPanel.port.emit('bmark_data', {
+            description: tabs.activeTab.title,
+            url: tabs.activeTab.url
+        });
 
-       // Now let's see if the user has bookmarked this before.
-       console.log('hashing url');
-       var hash_id = hash_url(tabs.activeTab.url);
-       console.log(hash_id);
-       fetch_bmark(api, hash_id);
+        // Now let's see if the user has bookmarked this before.
+        console.log('hashing url');
+        var hash_id = hash_url(tabs.activeTab.url);
+        console.log(hash_id);
+        fetch_bmark(api, hash_id);
     });
 
     // Handle saving a new bookmark.
