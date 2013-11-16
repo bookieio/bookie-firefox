@@ -48,6 +48,9 @@ var ApiBase = function (config) {
     };
 
     var post = function (endpoint, params, cb, scope) {
+        console.log('post');
+        console.log(endpoint);
+        console.log(params);
         call(endpoint, params, cb, scope).post();
     };
 
@@ -71,13 +74,21 @@ exports.BookieApi = function (config) {
     var calls = {
         bmark: function (hash_id, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + hash_id;
-            _api.get(api_url_append, {}, callbacks, bind_scope);
+            _api.get(api_url_append,
+                     {last_bmark: true},
+                     callbacks,
+                     bind_scope);
         },
         remove: function (hash_id, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + hash_id;
             _api.delete(api_url_append, {}, callbacks, bind_scope);
         },
         save: function (tab_data, callbacks, bind_scope) {
+            console.log('save data');
+            console.log(tab_data);
+
+            // If the hash_id is part of the data, we're editing an existing
+            // bookmark. Make sure we add that to the url.
             var api_url_append = "/bmark";
             _api.post(api_url_append, tab_data, callbacks, bind_scope);
         },

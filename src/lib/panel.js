@@ -23,6 +23,10 @@ exports.init = function(prefs, api) {
         height: 300
     });
 
+    addBookmarkPanel.bindWidget = function(widget) {
+      this._widget = widget;
+    };
+
     /**
      * Make ping request to check configuration settings on panel show.
      *
@@ -98,6 +102,8 @@ exports.init = function(prefs, api) {
            'bmark_url': user_url + prefs.api_username
        });
 
+       console.log('Tab Data');
+       console.log(tabs.activeTab.url);
        addBookmarkPanel.port.emit('bmark_data', {
            description: tabs.activeTab.title,
            url: tabs.activeTab.url
@@ -122,10 +128,15 @@ exports.init = function(prefs, api) {
                     let result = res.json;
                     if (result.bmark.bid) {
                         console.log('IT WORKED');
-                        addBookmarkPanel.destroy();
-
                         addBookmarkPanel.port.emit('saved');
-                        widget.port.emit(BMARK_SUCCESS);
+
+                        // Notify the world that we've saved the bookmark.
+                        if (addBookmarkPanel._widget) {
+                            console.log('NOTIFY WIDGET');
+                            addBookmarkPanel._widget.port.emit('bmark_success');
+                        }
+
+                        addBookmarkPanel.destroy();
                     }
                 }
             }, this

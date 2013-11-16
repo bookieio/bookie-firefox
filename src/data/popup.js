@@ -16,14 +16,22 @@
 self.port.on('bmark_data', function (data) {
     console.log('bmark_data');
     console.log(data);
-    var del = document.getElementById('delete');
+    var isHidden,
+        del = document.getElementById('delete');
+
+    // If it's a new bookmark it'll have a url from the tab data.
+    if (data.url) {
+        document.getElementById('url').value = data.url;
+    }
+
+    // If it's an existing bmark we'll have a hash_id to id this bmark.
     if (data.hash_id) {
         document.getElementById('hash_id').value = data.hash_id;
 
         // Show the delete button as an option.
         del.className = del.className.replace('hidden', '');
     } else {
-        var isHidden = del.className.indexOf('hidden') !== -1;
+       isHidden = del.className.indexOf('hidden') !== -1;
         if (!isHidden) {
             del.className = del.className + " hidden";
         }
@@ -37,9 +45,37 @@ self.port.on('bmark_data', function (data) {
         document.getElementById('tag_filter').value = tag_str;
     }
 
+    console.log(data);
+    console.log(data.last);
+    var suggested = document.getElementById("suggested_tags");
+    var latest = document.getElementById("latest_tags");
+    // Reset it to be empty.
+    latest.innerHTML = '';
+
+    if (data.last) {
+        // If we've gotten back a last bookmark, then make sure we build a
+        // list of tags for the clicking and reusing.
+        var tags = data.last.tag_str.split(' ');
+        if (tags.length) {
+            tags.forEach(function(tag) {
+              latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
+            });
+
+            // Show by removing the hidden css class.
+            suggested.className.replace('hidden', '');
+        } else {
+            isHidden = suggested.className.indexOf('hidden') !== -1;
+            if (!isHidden) {
+                suggested.className = suggestsed.className + " hidden";
+            }
+        }
+    }
+
     if (data.description) {
         document.getElementById('description').value = data.description;
     }
+
+
 
     if (data.extended) {
         document.getElementById('extended').value = data.extended;
@@ -65,6 +101,13 @@ self.port.on("show", function (userConfig) {
         ev.preventDefault();
 
         let f = ev.target;
+        console.log('on submit');
+        console.log(f);
+        var url = document.getElementById('url');
+        console.log('url:' + url.value);
+
+        console.log(f.url.value);
+        console.log(f.tag_filter.value);
         self.port.emit('save_bmark', {
             'url': f.url.value,
             'description': f.description.value,

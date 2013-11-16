@@ -1,7 +1,7 @@
 var data = require("sdk/self").data,
     prefs = require('sdk/simple-prefs'),
     tabs = require("sdk/tabs"),
-    widgets = require("sdk/widget");
+    widgets = require("sdk/widget"),
     BookieApi = require('./api').BookieApi,
     api = BookieApi(prefs.prefs);
 
@@ -30,3 +30,6 @@ var widget = widgets.Widget({
   contentScriptFile: data.url('widget_script.js'),
   panel: bookie_panel
 });
+
+// Make sure the panel notifies the widget that things have happened.
+bookie_panel.bindWidget(widget);
