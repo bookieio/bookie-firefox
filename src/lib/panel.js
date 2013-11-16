@@ -138,7 +138,7 @@ exports.init = function(prefs, api) {
                         // Notify the world that we've saved the bookmark.
                         if (addBookmarkPanel._widget) {
                             console.log('NOTIFY WIDGET');
-                            addBookmarkPanel._widget.port.emit('bmark_success');
+                            addBookmarkPanel._widget.port.emit(BMARK_SUCCESS);
                         }
 
                         addBookmarkPanel.destroy();
@@ -161,9 +161,17 @@ exports.init = function(prefs, api) {
         api.remove(data.hash_id, {
             success: function (response) {
                 console.log(response.json);
+                // Notify the world that we've removed the bookmark.
+                if (addBookmarkPanel._widget) {
+                    console.log('NOTIFY WIDGET');
+                    addBookmarkPanel._widget.port.emit(BMARK_REMOVED);
+                }
                 addBookmarkPanel.destroy();
             },
             failure: function(response) {
+                console.log('NOTIFY WIDGET FAILURE');
+                addBookmarkPanel._widget.port.emit(BMARK_ERROR);
+                addBookmarkPanel.destroy();
                 console.log(response.json.error);
             }
         });
