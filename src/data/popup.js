@@ -16,11 +16,10 @@
 self.port.on('bmark_data', function (data) {
     console.log('bmark_data');
     console.log(data);
+
+    // Toggle the delete button.
     var del = document.getElementById('delete');
     if (data.hash_id) {
-        document.getElementById('hash_id').value = data.hash_id;
-
-        // Show the delete button as an option.
         del.className = del.className.replace('hidden', '');
     } else {
         var isHidden = del.className.indexOf('hidden') !== -1;
@@ -28,6 +27,7 @@ self.port.on('bmark_data', function (data) {
             del.className = del.className + " hidden";
         }
     }
+    document.getElementById('hash_id').value = data.hash_id;
 
     if (data.tags) {
         var tag_str = "";
@@ -37,13 +37,8 @@ self.port.on('bmark_data', function (data) {
         document.getElementById('tag_filter').value = tag_str;
     }
 
-    if (data.description) {
-        document.getElementById('description').value = data.description;
-    }
-
-    if (data.extended) {
-        document.getElementById('extended').value = data.extended;
-    }
+    document.getElementById('description').value = data.description;
+    document.getElementById('extended').value = data.extended;
 });
 
 

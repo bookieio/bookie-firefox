@@ -99,6 +99,9 @@ exports.init = function(prefs, api) {
         // also want to pull the tabs content if the
         // appropriate user option is set
         addBookmarkPanel.port.emit('bmark_data', {
+            tags: [],
+            hash_id: '',
+            extended: '',
             description: tabs.activeTab.title,
             url: tabs.activeTab.url
         });
