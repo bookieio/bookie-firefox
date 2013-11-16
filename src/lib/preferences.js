@@ -1,10 +1,9 @@
-var storage = require('./storage').Storage(),
-    preferenceData = {};
+var preferenceData = {};
 
 console.log('preferences.js');
 console.log(preferenceData);
 
-var init = function(prefs, api) {
+var init = function(prefs, api, storage) {
     prefs.on("", onPrefChange);
     prefs.on('sync', onSyncBmarks);
 
@@ -32,7 +31,9 @@ var init = function(prefs, api) {
         console.log('SYNC IT');
         api.sync({
             success: function(resp) {
-                storage.save('hash_list', resp.json.hash_list);
+                resp.json.hash_list.forEach(function(key) {
+                    storage.save(key, true);
+                })
             },
             failure: function(resp) {
                 console.log('sync fail');

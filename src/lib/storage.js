@@ -5,14 +5,17 @@ var extStorage = require('sdk/simple-storage').storage;
 var Storage = function() {
 
     var save = function(key, data) {
+        console.log("Saving: " + key);
         extStorage[key] = data;
     };
 
     var get = function(key) {
-        // NOTE
-        // The || [] bit is hacky; should change once we start
-        // saving other things besides a url hash array.
-        return extStorage[key] || [];
+        console.log('checking for key: ' + key);
+        console.log('did we find it?');
+        console.log(extStorage[key]);
+        console.log(extStorage[key]);
+
+        return extStorage[key];
     };
 
     return {

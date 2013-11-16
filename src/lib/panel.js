@@ -12,7 +12,7 @@ const BMARK_EXISTS = 'bmark_exists';
 const BMARK_RESET = 'icon_reset';
 
 
-exports.init = function(prefs, api) {
+exports.init = function(prefs, api, storage) {
     console.log('panel init');
     console.log(prefs);
     console.log(api);
@@ -70,14 +70,11 @@ exports.init = function(prefs, api) {
                     console.log('fetch bmark success');
                     addBookmarkPanel.port.emit('bmark_data',
                                                response.json.bmark);
-
-                    addBookmarkPanel._widget.port.emit(BMARK_EXISTS);
                 },
                 failure: function(response) {
                     addBookmarkPanel.port.emit('bmark_data',
                                                {},
                                                response.json.last);
-                    addBookmarkPanel._widget.port.emit(BMARK_RESET);
                 }
             }, this);
         }
@@ -142,12 +139,12 @@ exports.init = function(prefs, api) {
                     let result = res.json;
                     if (result.bmark.bid) {
                         console.log('IT WORKED');
-                        addBookmarkPanel.port.emit('saved');
+                        storage.save(result.bmark.hash_id, true);
 
                         // Notify the world that we've saved the bookmark.
                         if (addBookmarkPanel._widget) {
                             console.log('NOTIFY WIDGET');
-                            addBookmarkPanel._widget.port.emit(BMARK_SUCCESS);
+                            addBookmarkPanel.port.emit(BMARK_EXISTS);
                         }
 
                         addBookmarkPanel.destroy();
@@ -174,6 +171,8 @@ exports.init = function(prefs, api) {
                 if (addBookmarkPanel._widget) {
                     console.log('NOTIFY WIDGET');
                     addBookmarkPanel._widget.port.emit(BMARK_REMOVED);
+                    // Clear the data on this bookmark.
+                    storage.set(data.hash_id, undefined);
                 }
                 addBookmarkPanel.destroy();
             },
