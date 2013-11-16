@@ -53,20 +53,23 @@ exports.init = function(prefs, api) {
     };
 
     var fetch_bmark = function(api, hash_id) {
-        api.bmark(hash_id, {
-            success: function(response) {
-                console.log('fetch bmark success');
-                if (response.json.bmark) {
-                    addBookmarkPanel.port.emit('bmark_data',
-                                               response.json.bmark);
+        // don't waste a call if this is a blank new tab
+        // hash '4fa72d735a519e' == url 'about:newtab'
+        if (hash_id !== '4fa72d735a519e') {
+            api.bmark(hash_id, {
+                success: function(response) {
+                    console.log('fetch bmark success');
+                    if (response.json.bmark) {
+                        addBookmarkPanel.port.emit('bmark_data',
+                                                   response.json.bmark);
+                    }
+                },
+                failure: function(response) {
+                    console.log('fetch bmark error');
+                    console.log(response);
                 }
-            },
-            failure: function(response) {
-                console.log('fetch bmark error');
-                console.log(response);
-            }
-        }, this);
-
+            }, this);
+        }
     };
 
 
