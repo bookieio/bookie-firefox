@@ -137,6 +137,9 @@ exports.init = function(prefs, api, storage) {
                     console.log(res.text);
 
                     let result = res.json;
+                    console.log(result);
+                    console.log(result.bmark);
+                    console.log(result.bmark.bid);
                     if (result.bmark.bid) {
                         console.log('IT WORKED');
                         storage.save(result.bmark.hash_id, true);
@@ -144,10 +147,10 @@ exports.init = function(prefs, api, storage) {
                         // Notify the world that we've saved the bookmark.
                         if (addBookmarkPanel._widget) {
                             console.log('NOTIFY WIDGET');
-                            addBookmarkPanel.port.emit(BMARK_EXISTS);
+                            addBookmarkPanel._widget.port.emit(BMARK_EXISTS);
                         }
 
-                        addBookmarkPanel.destroy();
+                        addBookmarkPanel.hide();
                     }
                 }
             }, this
@@ -172,14 +175,14 @@ exports.init = function(prefs, api, storage) {
                     console.log('NOTIFY WIDGET');
                     addBookmarkPanel._widget.port.emit(BMARK_REMOVED);
                     // Clear the data on this bookmark.
-                    storage.set(data.hash_id, undefined);
+                    storage.save(data.hash_id, undefined);
                 }
-                addBookmarkPanel.destroy();
+                addBookmarkPanel.hide();
             },
             failure: function(response) {
                 console.log('NOTIFY WIDGET FAILURE');
                 addBookmarkPanel._widget.port.emit(BMARK_ERROR);
-                addBookmarkPanel.destroy();
+                addBookmarkPanel.hide();
                 console.log(response.json.error);
             }
         });
