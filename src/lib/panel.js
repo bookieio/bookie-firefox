@@ -63,6 +63,11 @@ exports.init = function(prefs, api) {
                 if (response.json.bmark) {
                     addBookmarkPanel.port.emit('bmark_data',
                                                response.json.bmark);
+                } else if (response.json.last) {
+                    addBookmarkPanel.port.emit('bmark_data',
+                                               {},
+                                               response.json.last);
+
                 }
             },
             failure: function(response) {

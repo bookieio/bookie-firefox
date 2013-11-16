@@ -13,7 +13,7 @@
  * @param {Object} data The bmark data such as hash_id, url, title, etc.
  *
  */
-self.port.on('bmark_data', function (data) {
+self.port.on('bmark_data', function (data, last) {
     console.log('bmark_data');
     console.log(data);
     var isHidden,
@@ -46,23 +46,23 @@ self.port.on('bmark_data', function (data) {
     }
 
     console.log(data);
-    console.log(data.last);
+    console.log(last);
     var suggested = document.getElementById("suggested_tags");
     var latest = document.getElementById("latest_tags");
     // Reset it to be empty.
     latest.innerHTML = '';
 
-    if (data.last) {
+    if (last) {
         // If we've gotten back a last bookmark, then make sure we build a
         // list of tags for the clicking and reusing.
-        var tags = data.last.tag_str.split(' ');
+        var tags = last.tag_str.split(' ');
         if (tags.length) {
             tags.forEach(function(tag) {
               latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
             });
 
             // Show by removing the hidden css class.
-            suggested.className.replace('hidden', '');
+            suggested.className = suggested.className.replace('hidden', '');
         } else {
             isHidden = suggested.className.indexOf('hidden') !== -1;
             if (!isHidden) {
@@ -74,8 +74,6 @@ self.port.on('bmark_data', function (data) {
     if (data.description) {
         document.getElementById('description').value = data.description;
     }
-
-
 
     if (data.extended) {
         document.getElementById('extended').value = data.extended;
@@ -130,6 +128,8 @@ self.port.on("show", function (userConfig) {
 
     // setup link to users bmark instance page
     document.getElementById('bookie_site').href = userConfig.bmark_url;
+    // Give focus to the tag element to start entering and saving.
+    document.getElementById('tag_filter').focus();
 });
 
 
