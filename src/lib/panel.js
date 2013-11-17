@@ -92,7 +92,19 @@ exports.init = function(prefs, api, storage) {
         }
     };
 
+    var fetchPageContent = function () {
+        var worker = tabs.activeTab.attach({
+            contentScriptFile: data.url('active_tab_content.js'),
+        });
 
+        worker.port.on('got_content', function (pageHtml) {
+            console.log('GOT DA CONFIG EVENT');
+            console.log(pageHtml.substring(0, 100));
+
+            // Now we can populate the save form with the content of this tab.
+            addBookmarkPanel.port.emit('panelHtml', pageHtml);
+        });
+    };
 
     // @ToDo
     // On show we can do the work to check if the user has bookmarked this
@@ -106,6 +118,8 @@ exports.init = function(prefs, api, storage) {
         console.log(prefs);
         console.log(tabs.activeTab);
 
+        fetchPageContent();
+
         let user_url = prefs.api_url.replace(/api\/v1\/?/, '');
 
        // Make the ping to check prefs for the user.
@@ -117,9 +131,9 @@ exports.init = function(prefs, api, storage) {
        console.log("url of active tab is " + tabs.activeTab.url);
        console.log("title of active tab is " + tabs.activeTab.title);
 
-       addBookmarkPanel.port.emit('show', {
-           'bmark_url': user_url + prefs.api_username
-       });
+       prefs.bmark_url = user_url + prefs.api_username;
+
+       addBookmarkPanel.port.emit('show', prefs);
 
        // TODO
        // also want to pull the tabs content if the

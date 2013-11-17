@@ -46,9 +46,3 @@ self.port.on('icon_reset', function () {
     console.log('RESET');
     icon.src = normal;
 });
-
-
-console.log('Widget Script');
-console.log(self);
-console.log(self.prototype);
-console.log(self.panel);

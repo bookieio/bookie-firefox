@@ -26,10 +26,9 @@ var ApiBase = function (config) {
             content: params,
             onComplete: function (response) {
                 console.log('onComplete ajax call');
-                console.log(response);
                 console.log(response.status);
                 console.log(response.statusText);
-                console.log(response.json);
+                // console.log(response.json);
                 // @ToDo Check the response for a status code != 200 or if the json
                 // body has an error property in it. If so, this failed and we
                 // should call cb.failure.
@@ -38,7 +37,6 @@ var ApiBase = function (config) {
         });
 
         console.log(request.url);
-        console.log(request.content);
 
         return request;
     };
@@ -50,7 +48,6 @@ var ApiBase = function (config) {
     var post = function (endpoint, params, cb, scope) {
         console.log('post');
         console.log(endpoint);
-        console.log(params);
         call(endpoint, params, cb, scope).post();
     };
 
@@ -85,7 +82,6 @@ exports.BookieApi = function (config) {
         },
         save: function (tab_data, callbacks, bind_scope) {
             console.log('save data');
-            console.log(tab_data);
 
             // If the hash_id is part of the data, we're editing an existing
             // bookmark. Make sure we add that to the url.

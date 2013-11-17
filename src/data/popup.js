@@ -106,12 +106,22 @@ self.port.on("show", function (userConfig) {
 
         console.log(f.url.value);
         console.log(f.tag_filter.value);
-        self.port.emit('save_bmark', {
+        console.log('CONTENT in api call');
+        console.log(f.content.value.substring(0, 100));
+        var bmark_data = {
             'url': f.url.value,
             'description': f.description.value,
             'extended': f.extended,
             'tags': f.tag_filter.value
-        });
+        };
+
+        console.log('Cache Content?');
+        if (userConfig.cache_content && userConfig.cache_content !== 'false') {
+            console.log('Sending page content with api request to save');
+            bmark_data.content = f.content.value;
+        }
+
+        self.port.emit('save_bmark', bmark_data);
     });
 
 
@@ -161,7 +171,7 @@ self.port.on("show", function (userConfig) {
 self.port.on('saved', function() {
     //window.close(); this is not allowed apparently
     //@ToDo store the hash of the saved bookmark into the localstorage or some
-    //storage to track we have bookmarked this beore?
+    //storage to track we have bookmarked this before?
 });
 
 /**
@@ -186,4 +196,10 @@ self.port.on('ping', function(error_msg) {
         errors.innerHTML = '';
         errors.className = 'hidden';
     }
+});
+
+self.port.on('panelHtml', function(html) {
+    console.log('on panelHtml');
+    console.log(html.substring(0, 100));
+    document.getElementById('content').value = html;
 });
