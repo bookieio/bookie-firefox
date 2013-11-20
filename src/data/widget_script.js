@@ -1,9 +1,9 @@
 /*jshint moz:true*/
 var icon = document.getElementById('icon');
-var normal = 'images/logo.18.png',
-    green = 'images/logo.18.green.png',
-    red = 'images/logo.18.red.png',
-    plus = 'images/logo.18.plus.png';
+var normal = 'images/logo.16.png',
+    green = 'images/logo.16.green.png',
+    red = 'images/logo.16.red.png',
+    plus = 'images/logo.16.plus.png';
 
 // TODO
 // setting background color doesn't work as it does
