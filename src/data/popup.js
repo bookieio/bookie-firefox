@@ -62,6 +62,7 @@ self.port.on('bmark_data', function (data, last) {
 
             // Show by removing the hidden css class.
             suggested.className = suggested.className.replace('hidden', '');
+
         } else {
             isHidden = suggested.className.indexOf('hidden') !== -1;
             if (!isHidden) {
@@ -129,6 +130,31 @@ self.port.on("show", function (userConfig) {
     document.getElementById('bookie_site').href = userConfig.bmark_url;
     // Give focus to the tag element to start entering and saving.
     document.getElementById('tag_filter').focus();
+
+    var latest = document.getElementById("latest_tags");
+
+    // Detach any old event for suggested tags and re-attach.
+    console.log("SuggestedTagClick1");
+    // According go MDN dupe events are discarded.
+    latest.addEventListener("click", function(ev) {
+        ev.preventDefault();
+        var target = ev.target;
+        if (target.nodeName.toLowerCase() === 'a') {
+
+            var tag_filter = document.getElementById('tag_filter');
+            // Only add the tag if it's not already there.
+            var tag_exists = new RegExp('^' + target.innerHTML + ' ');
+            var tag_exists2 = new RegExp(' ' + target.innerHTML + ' ');
+
+            if (!tag_exists.exec(tag_filter.value) && !tag_exists2.exec(tag_filter.value)) {
+                tag_filter.value = tag_filter.value + target.innerHTML + ' ';
+                tag_filter.setAttribute('value', tag_filter.value);
+            }
+
+            latest.removeChild(target);
+        }
+        return;
+    });
 });
 
 

@@ -27,7 +27,6 @@ exports.init = function(prefs, api, storage) {
     // Watch the tab for activate and show the + icon if the url has been
     // bookmarked.
     // @TODO
-
     addBookmarkPanel.bindWidget = function(widget) {
       this._widget = widget;
     };
@@ -67,11 +66,24 @@ exports.init = function(prefs, api, storage) {
         if (hash_id !== '4fa72d735a519e') {
             api.bmark(hash_id, {
                 success: function(response) {
-                    console.log('fetch bmark success');
-                    addBookmarkPanel.port.emit('bmark_data',
+                    console.log(response.status);
+                    if (response.status == 200) {
+                        console.log('fetch bmark success');
+                        addBookmarkPanel.port.emit('bmark_data',
                                                response.json.bmark);
+                    } else {
+                        console.log('fetch bmark latest');
+                        console.log(response.json);
+                        addBookmarkPanel.port.emit('bmark_data',
+                                                   {},
+                                                   response.json.last);
+                    }
+
                 },
                 failure: function(response) {
+                    console.log('fetch bmark failure');
+                    console.log(response.json);
+
                     addBookmarkPanel.port.emit('bmark_data',
                                                {},
                                                response.json.last);
