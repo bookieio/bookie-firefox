@@ -1,40 +1,39 @@
 {
-    "author": "", 
-    "description": "Bookie Bookmarks", 
-    "fullName": "Bookie", 
-    "id": "jid1-zsQS9x5zIenFuw", 
-    "license": "BSD", 
-    "name": "bookie", 
+    "description": "Bookie Bookmarks",
+    "fullName": "Bookie",
+    "id": "jid1-zsQS9x5zIenFuw",
+    "license": "BSD",
+    "name": "bookie",
     "preferences": [
         {
-            "name": "api_url", 
-            "title": "Bookie url", 
-            "type": "string", 
+            "name": "api_url",
+            "title": "Bookie url",
+            "type": "string",
             "value": "https://bmark.us/api/v1/"
-        }, 
+        },
         {
-            "name": "api_username", 
-            "title": "Bookie username", 
+            "name": "api_username",
+            "title": "Bookie username",
             "type": "string"
-        }, 
+        },
         {
-            "name": "api_key", 
-            "title": "API key", 
+            "name": "api_key",
+            "title": "API key",
             "type": "string"
-        }, 
+        },
         {
-            "name": "cache_content", 
-            "title": "Cache Content", 
-            "type": "bool", 
+            "name": "cache_content",
+            "title": "Cache Content",
+            "type": "bool",
             "value": "false"
-        }, 
+        },
         {
-            "description": "This will download information about your bookmarks from the bookie server instance into your browser. This helps us notify you when you're on a page you've already bookmarked.", 
-            "label": "sync", 
-            "name": "sync", 
-            "title": "Server Sync", 
+            "description": "This will download information about your bookmarks from the bookie server instance into your browser. This helps us notify you when you're on a page you've already bookmarked.",
+            "label": "sync",
+            "name": "sync",
+            "title": "Server Sync",
             "type": "control"
         }
-    ], 
+    ],
     "version": "0.1a8"
 }
