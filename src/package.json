@@ -1,6 +1,9 @@
 {
     "description": "Bookie Bookmarks",
     "fullName": "Bookie",
+    "homepage": "https://github.com/bookieio/bookie-firefox",
+    "icon": "data/images/logo.48.png",
+    "icon64": "data/images/logo.64.png",
     "id": "jid1-zsQS9x5zIenFuw",
     "license": "BSD",
     "name": "bookie",
