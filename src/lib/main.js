@@ -59,3 +59,10 @@ tabs.on('ready', function(tab) {
         widget.port.emit('icon_reset');
     }
 });
+
+exports.main = function (options, callbacks) {
+    // When the extension is first installed, show some help.
+    if (options.loadReason === 'install') {
+        tabs.open(data.url('main/install.html'));
+    };
+};
