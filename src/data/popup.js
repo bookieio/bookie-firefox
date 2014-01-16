@@ -112,7 +112,8 @@ self.port.on("show", function (userConfig) {
             'url': f.url.value,
             'description': f.description.value,
             'extended': f.extended,
-            'tags': f.tag_filter.value
+            'tags': f.tag_filter.value,
+            'inserted_by': f.inserted_by.value
         };
 
         console.log('Cache Content?');
