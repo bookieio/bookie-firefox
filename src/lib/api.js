@@ -28,6 +28,14 @@ var ApiBase = function (config) {
                 console.log('onComplete ajax call');
                 console.log(response.status);
                 console.log(response.statusText);
+				try{
+					if(response.status != 200) throw "bad";
+					JSON.parse(response.json);
+				}catch(e){
+					if(e == 'bad'|| e== 'SyntaxError')
+					cb.failure(response);
+					}
+
                 // console.log(response.json);
                 // @ToDo Check the response for a status code != 200 or if the json
                 // body has an error property in it. If so, this failed and we
@@ -35,7 +43,6 @@ var ApiBase = function (config) {
                 cb.success(response);
             }
         });
-
         console.log(request.url);
 
         return request;
