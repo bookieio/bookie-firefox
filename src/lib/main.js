@@ -3,7 +3,8 @@ var data = require("sdk/self").data,
     tabs = require("sdk/tabs"),
     widgets = require("sdk/widget"),
     BookieApi = require('./api').BookieApi,
-    api = BookieApi(prefs.prefs);
+    api = BookieApi(prefs.prefs),
+   { Hotkey } = require("sdk/hotkeys");
 
 // Util to hash a url into the hash_id used in Bookie.
 var hash_url = require("./hash").hash_url;
@@ -57,6 +58,18 @@ tabs.on('ready', function(tab) {
         widget.port.emit('bmark_exists');
     } else {
         widget.port.emit('icon_reset');
+    }
+});
+
+var showBmarkPanel = Hotkey({
+    combo: "accel-alt-d",
+    onPress: function() {
+        bookie_panel.show({
+            position: {
+                bottom: 10,
+                right: 10
+            }
+        });
     }
 });
 
