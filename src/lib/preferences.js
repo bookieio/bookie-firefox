@@ -4,9 +4,14 @@ console.log('preferences.js');
 console.log(preferenceData);
 
 var init = function(prefs, api, storage) {
-    prefs.on("", onPrefChange);
+    
+    // Add a listener only when the following changes
+    // Changes in cache_content key don't really matter.
+    prefs.on("api_key", onPrefChange);
+    prefs.on("api_url", onPrefChange);
+    prefs.on("api_username", onPrefChange);
     prefs.on('sync', onSyncBmarks);
-
+    
     // TODO
     // hook into /api/v1/{username}/ping to check settings
     function onPrefChange(prefName) {
@@ -33,7 +38,7 @@ var init = function(prefs, api, storage) {
             success: function(resp) {
                 resp.json.hash_list.forEach(function(key) {
                     storage.save(key, true);
-                })
+                });
             },
             failure: function(resp) {
                 console.log('sync fail');
@@ -47,6 +52,5 @@ var init = function(prefs, api, storage) {
     console.log(preferenceData);
     return preferenceData;
 };
-
 
 exports.init = init;
