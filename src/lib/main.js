@@ -66,7 +66,8 @@ exports.main = function(options, callbacks) {
     // Check for the savedPrefs flag every single time the extensions
     // starts up. Set the key only when the user enters a valid key for the 
     // first time. 
-    if (options.loadReason === 'install' || options.loadReason === 'startup' || options.loadReason === 'enable') {
+    if (options.loadReason === 'install' || options.loadReason === 'startup'
+            || options.loadReason === 'enable') {
         if (storage.get("savedPrefs")) {
             return;
         }

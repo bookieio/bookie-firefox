@@ -12,8 +12,6 @@ var init = function(prefs, api, storage) {
     prefs.on("api_username", onPrefChange);
     prefs.on('sync', onSyncBmarks);
     
-    // TODO
-    // hook into /api/v1/{username}/ping to check settings
     function onPrefChange(prefName) {
         api.ping({
             success:  function(response) {
