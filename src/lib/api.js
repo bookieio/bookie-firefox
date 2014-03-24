@@ -27,17 +27,19 @@ var ApiBase = function (config) {
             onComplete: function (response) {
                 console.log('onComplete ajax call');
                 console.log(response.status);
-                console.log(response.statusText);
-                // console.log(response.json);
-                // @ToDo Check the response for a status code != 200 or if the json
-                // body has an error property in it. If so, this failed and we
-                // should call cb.failure.
-                cb.success(response);
+                console.log(response.json);
+                
+                // Check if either the response status is not 200 or if the response
+                // cannot be parsed or if the response body contains an error property
+                if(response.status !== 200 || !response.json || response.json.error){
+                    cb.failure(response);
+                }else{
+                    cb.success(response);
+                }
             }
         });
 
         console.log(request.url);
-
         return request;
     };
 

@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="combo.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="base.css" type="text/css" charset="utf-8">
+
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
+                color:#444;
+            }
+
+            h1 {
+                font-size:24px;
+                font-weight:400;
+                color:#445;
+                padding-bottom:6px;
+                border-bottom:1px solid #ddd;
+            }
+
+            #info {
+                position:absolute;
+                box-shadow: 0px 0px 10px #888;
+                top:0px;
+                left:40%;
+                width:20%;
+                padding:10px 0;
+                color:#fff;
+                font-weight:800;
+                background-color:#080;
+                text-align:center;
+                display:none;
+                border-bottom-right-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+
+            .form input[type=text], .form input[type="url"], .form input[type="password"] {
+                width: 15em;
+            }
+
+            input:focus {
+                outline:1px solid #acf;
+            }
+
+            button {
+                margin:10px;
+                width:80px;
+                padding:2px 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Bookie Settings</h1>
+        <div style="width: 45%; float: left; padding-right: 2em;
+            vertical-align: top;" class="form">
+
+            <div class="heading">Connection Information</div>
+            <form id="form" action="">
+                <ul>
+                    <li>
+                        <label for="api_url">Bookie url</label>
+                        <input type="url" id="api_url" value="https://bmark.us/api/v1/" required/>
+                    </li>
+                    <li>
+                        <label for="api_username">Bookie username</label>
+                        <input type="text" id="api_username" required/>
+                    </li>
+                    <li>
+                        <label for="api_key">API key</label>
+                        <input type="password" placeholder="api key" id="api_key" required/>
+                    </li>
+                    <li>
+                        <label for="cache_content">Cache Content</label>
+                        <input type="checkbox" id="cache_content"/>
+                    </li>
+                </ul>
+                <div id="buttonrow">
+                    <button id="save_button" type="submit" class="button">Save</button>
+                </div>
+                <div id="options_msg" class="error">
+                </div>
+            </form>
+        </div>
+        <div style="width: 45%; float: left; padding-right: 2em;" class="form">
+            <div class="heading">Server Sync</div>
+            <div id="sync">
+                <p><strong>Note:</strong> your Bookie url and api key settings must
+                    be set and saved before using Sync</p>
+                <p>This will download information about your bookmarks from the
+                    bookie server instance into your browser. This helps us notify you
+                    when you're on a page you've already bookmarked.</p>
+            </div>
+            <button id="sync_button" class="button">Sync</button>
+            <div id="sync_msg" class=""></div>
+        </div>
+    </body>
+</html>
