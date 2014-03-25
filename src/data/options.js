@@ -1,17 +1,23 @@
-var saveButton = document.getElementById('save_button'),
-    syncButton = document.getElementById('sync_button'),
-    pingStatus = document.getElementById('options_msg'),
-    syncStatus = document.getElementById('sync_msg');
+self.port.emit("getPreferences");
+
+var handle = function(element) {
+    return document.getElementById(element);
+};
+
+var saveButton = handle('save_button'),
+    syncButton = handle('sync_button'),
+    pingStatus = handle('options_msg'),
+    syncStatus = handle('sync_msg');
 
 saveButton.onclick = function(e) {
     e.preventDefault();
     pingStatus.className = "";
     pingStatus.textContent = "Checking...";
     var prefData = {};
-    prefData['api_key'] = document.getElementById('api_key').value;
-    prefData['api_username'] = document.getElementById('api_username').value;
-    prefData['api_url'] = document.getElementById('api_url').value;
-    prefData['cache_content'] = document.getElementById('cache_content').checked;
+    prefData['api_key'] = handle('api_key').value;
+    prefData['api_username'] = handle('api_username').value;
+    prefData['api_url'] = handle('api_url').value;
+    prefData['cache_content'] = handle('cache_content').checked;
 
     self.port.emit('savePreferences', prefData);
 };
@@ -21,6 +27,29 @@ syncButton.onclick = function() {
     syncStatus.className = "";
     syncStatus.textContent = "Syncing...";
 };
+
+self.port.on("prefData", function(prefData) {
+
+    if (prefData.api_key) {
+        handle("api_key").value = prefData.api_key;
+    } else {
+        handle("api_key").value = "XXXXXX";
+    }
+
+    if (prefData.api_url) {
+        handle("api_url").value = prefData.api_url;
+    } else {
+        handle("api_url").value = "https://bmark.us/api/v1/";
+    }
+
+    if (prefData.api_username) {
+        handle("api_username").value = prefData.api_username;
+    }
+
+    if (prefData.cache_content) {
+        handle("cache_content").checked = prefData.cache_content;
+    }
+});
 
 self.port.on("syncSuccess", function() {
     syncStatus.className = "success";

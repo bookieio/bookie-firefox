@@ -96,6 +96,11 @@ exports.main = function(options, callbacks) {
         };
 
         var bindWorker = function() {
+
+            worker.port.on("getPreferences", function(){
+                worker.port.emit("prefData", prefs.prefs);
+            });
+
             worker.port.on("savePreferences", function(prefData) {
 
                 var api = BookieApi(prefData);
@@ -150,6 +155,7 @@ exports.main = function(options, callbacks) {
             url: data.url('options.html'),
             onLoad: attach
         });
+
     } else if (options.loadReason === "uninstall") {
         storage.save("savedPrefs", false);
     }
