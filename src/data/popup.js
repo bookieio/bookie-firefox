@@ -168,7 +168,6 @@ self.port.on("show", function (userConfig) {
     });
 });
 
-
 self.port.on('saved', function() {
     //window.close(); this is not allowed apparently
     //@ToDo store the hash of the saved bookmark into the localstorage or some
@@ -189,8 +188,21 @@ self.port.on('ping', function(error_msg) {
     var errors = document.querySelector('#errors');
 
     if (error_msg) {
-        msg = "Attempted to ping the server but got an error: '" + error_msg;
+        var msg = "Attempted to ping the server but got an error: '" + error_msg;
         msg += "'<br />Please check your api url, username, and api_key settings";
+        errors.innerHTML = msg;
+        errors.className = '';
+    } else {
+        errors.innerHTML = '';
+        errors.className = 'hidden';
+    }
+});
+
+self.port.on('saveError', function(error_msg) {
+    var errors = document.querySelector('#errors');
+
+    if (error_msg) {
+        var msg = "Attempted to save the bookmark but got an error: '" + error_msg;
         errors.innerHTML = msg;
         errors.className = '';
     } else {
