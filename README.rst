@@ -56,6 +56,25 @@ You can load a new Firefox window with the extension loaded with ``make run``.
 This will use the sdk to launch the Firefox instance and can be used for dev
 and qa work.
 
+Alternatively, you can run ``cfx xpi`` after navigating to the src folder
+like so.
+
+::
+
+    cd src
+    cfx xpi
+
+Open the Firefox browser and point the url to about:config. Add a new key
+with name : "extensions.sdk.console.logLevel" and key: "info" to set the
+required logging level.
+
+Hit Ctrl/Cmd + Shift + A to open the Add-On Manager. Install the extension
+manually by clicking the gear icon and selecting "Install Add-on from File..."
+You may access the Add-On Manager using Tools -> Add-ons.
+
+After the extension has been installed, hit Ctrl/Cmd + Shift + J to bring
+up the Browser Console that houses all the log messages. You may access
+the Browser Console using Tools -> Web Developer -> Browser Console.
 
 Known limitations/issues
 ------------------------
