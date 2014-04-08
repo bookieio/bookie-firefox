@@ -111,7 +111,7 @@ self.port.on("show", function (userConfig) {
         var bmark_data = {
             'url': f.url.value,
             'description': f.description.value,
-            'extended': f.extended,
+            'extended': f.extended.value,
             'tags': f.tag_filter.value,
             'inserted_by': f.inserted_by.value
         };
