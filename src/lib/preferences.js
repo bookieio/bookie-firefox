@@ -15,9 +15,11 @@ var init = function(prefs, api, storage) {
     function onPrefChange(prefName) {
         api.ping({
             success:  function(response) {
+                storage.save("savedPrefs", true);
                 console.log("The " + prefName + " preference changed.");
             },
             failure: function(response) {
+                storage.save("savedPrefs", false);
                 console.log(
                     "The ping command failed. " +
                     "Please check your api url, username, and api_key. " +

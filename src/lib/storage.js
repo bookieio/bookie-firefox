@@ -13,7 +13,6 @@ var Storage = function() {
         console.log('checking for key: ' + key);
         console.log('did we find it?');
         console.log(extStorage[key]);
-        console.log(extStorage[key]);
 
         return extStorage[key];
     };

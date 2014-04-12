@@ -123,7 +123,6 @@ exports.main = function(options, callbacks) {
                         }
                     },
                     failure: function(response) {
-
                         // Emit a message so that options.js can modify the HTML and
                         // inform the user to verify his credentials.
                         worker.port.emit("pingFailed", response.json);
@@ -155,8 +154,5 @@ exports.main = function(options, callbacks) {
             url: data.url('options.html'),
             onLoad: attach
         });
-
-    } else if (options.loadReason === "uninstall") {
-        storage.save("savedPrefs", false);
     }
 };
