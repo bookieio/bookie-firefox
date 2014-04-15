@@ -178,6 +178,21 @@ exports.init = function(prefs, api, storage) {
 
                         addBookmarkPanel.hide();
                     }
+                },
+
+                failure: function(res) {
+                    console.log("save bookmark call failed");
+                    console.log(res);
+                    let result = res.json;
+                    console.log(result.json);
+
+                    if (addBookmarkPanel._widget) {
+                        console.log('NOTIFY WIDGET');
+                        addBookmarkPanel._widget.port.emit(BMARK_ERROR);
+                    }
+
+                    var msg = "Cannot save bookmark, POST request failed.";
+                    addBookmarkPanel.port.emit('saveError', msg);
                 }
             }, this
         );
