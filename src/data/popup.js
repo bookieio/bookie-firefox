@@ -13,12 +13,17 @@
  * @param {Object} data The bmark data such as hash_id, url, title, etc.
  *
  */
-self.port.on('bmark_data', function (data, last) {
-    console.log('bmark_data');
+self.port.on('bmark_data', function (data, tag_suggestions, last) {
+    console.log("Bmark object");
     console.log(data);
+    console.log("Last object");
+    console.log(last);
+    console.log("Tag Suggestions array");
+    console.log(tag_suggestions);
 
     var isHidden,
-        del = document.getElementById('delete');
+        del = document.getElementById('delete'),
+        tagList = [];
 
     // If it's a new bookmark it'll have a url from the tab data.
     if (data.url) {
@@ -29,7 +34,7 @@ self.port.on('bmark_data', function (data, last) {
     if (data.hash_id) {
         del.className = del.className.replace('hidden', '');
     } else {
-       isHidden = del.className.indexOf('hidden') !== -1;
+        isHidden = del.className.indexOf('hidden') !== -1;
         if (!isHidden) {
             del.className = del.className + " hidden";
         }
@@ -38,16 +43,25 @@ self.port.on('bmark_data', function (data, last) {
 
     if (data.tags) {
         var tag_str = "";
-        data.tags.forEach(function (tag) {
+        data.tags.forEach(function(tag) {
             tag_str += tag.name + ' ';
         });
         document.getElementById('tag_filter').value = tag_str;
     }
 
-    console.log(data);
-    console.log(last);
     var suggested = document.getElementById("suggested_tags");
     var latest = document.getElementById("latest_tags");
+
+    // When you navigate to a different tab, make sure to delete
+    // the tag suggestions for the tab where the panel was
+    // previously used. Hide the element and defer the unhide
+    // until the tagList object has some tags in it.
+    isHidden = suggested.className.indexOf('hidden') !== -1;
+    if (!isHidden) {
+        suggested.className = suggested.className + " hidden";
+        isHidden = true;
+    }
+
     // Reset it to be empty.
     latest.innerHTML = '';
 
@@ -57,17 +71,8 @@ self.port.on('bmark_data', function (data, last) {
         var tags = last.tag_str.split(' ');
         if (tags.length) {
             tags.forEach(function(tag) {
-              latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
+                tagList.push(tag);
             });
-
-            // Show by removing the hidden css class.
-            suggested.className = suggested.className.replace('hidden', '');
-
-        } else {
-            isHidden = suggested.className.indexOf('hidden') !== -1;
-            if (!isHidden) {
-                suggested.className = suggestsed.className + " hidden";
-            }
         }
     }
 
@@ -78,8 +83,54 @@ self.port.on('bmark_data', function (data, last) {
     if (data.extended) {
         document.getElementById('extended').value = data.extended;
     }
-});
 
+    // If there are tag suggestions, push them to the tagList object
+    if (tag_suggestions) {
+        tag_suggestions.forEach(function(tag) {
+            tagList.push(tag);
+        });
+    }
+
+    // Helper to remove duplicates from an array.
+    var dedup = function(array) {
+        var obj = {};
+
+        for (var i = 0; i < array.length; i++)
+            obj[array[i]] = true;
+
+        var uniqueArray = [];
+        for (var k in obj) {
+            uniqueArray.push(k);
+        }
+
+        return uniqueArray;
+    };
+
+    // Remove duplicates from the tagList array.
+    if (tagList.length) {
+        tagList = dedup(tagList);
+    }
+
+    // Update the suggested tags field now
+    tagList.forEach(function(tag) {
+        latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
+    });
+
+    // Show the suggested tags field only if there are elements
+    // in the tagList
+    if (tagList.length) {
+
+        // Show by removing the hidden css class.
+        suggested.className = suggested.className.replace('hidden', '');
+        isHidden = false;
+    } else {
+        isHidden = suggested.className.indexOf('hidden') !== -1;
+        if (!isHidden) {
+            suggested.className = suggested.className + " hidden";
+            isHidden = true;
+        }
+    }
+});
 
 /**
  * When the widget is clicked on, the panel is shown and this contentscript is

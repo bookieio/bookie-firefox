@@ -32,9 +32,13 @@ var ApiBase = function (config) {
                 // Check if either the response status is not 200 or if the response
                 // cannot be parsed or if the response body contains an error property
                 if(response.status !== 200 || !response.json || response.json.error){
-                    cb.failure(response);
+                    if(cb.failure){
+                        cb.failure(response);
+                    }
                 }else{
-                    cb.success(response);
+                    if(cb.success){
+                        cb.success(response);
+                    }
                 }
             }
         });
@@ -71,14 +75,20 @@ exports.BookieApi = function (config) {
     var _api = ApiBase(config);
 
     var calls = {
-        bmark: function (hash_id, callbacks, bind_scope) {
-            var api_url_append = "/bmark/" + hash_id;
-            _api.get(api_url_append,
-                     {last_bmark: true},
-                     callbacks,
-                     bind_scope);
+
+        // tabData contains the url, desciption and hash_id
+        // of the tab in consideration
+        bmark: function(tabData, callbacks, bind_scope) {
+            var api_url_append = "/bmark/" + tabData.hash_id;
+            _api.get(api_url_append, {
+                    last_bmark: true,
+                    url: tabData.url,
+                    description: tabData.description
+                },
+                callbacks,
+                bind_scope);
         },
-        remove: function (hash_id, callbacks, bind_scope) {
+        remove: function(hash_id, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + hash_id;
             _api.delete(api_url_append, {}, callbacks, bind_scope);
         },
