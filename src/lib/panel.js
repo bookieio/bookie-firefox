@@ -61,8 +61,6 @@ exports.init = function(prefs, api, storage) {
     };
 
     var fetch_bmark = function(api, url, title) {
-        // don't waste a call if this is a blank new tab
-        // hash '4fa72d735a519e' == url 'about:newtab'
         var hash_id = hash_url(url);
         var tabData = {
             description: title,
@@ -70,28 +68,41 @@ exports.init = function(prefs, api, storage) {
             hash_id: hash_id
         };
 
+        // don't waste a call if this is a blank new tab
+        // hash '4fa72d735a519e' == url 'about:newtab'
         if (hash_id !== '4fa72d735a519e') {
             api.bmark(tabData, {
                 success: function(response) {
                     console.log(response.status);
                     if (response.status == 200) {
                         console.log('fetch bmark success');
-                        addBookmarkPanel.port.emit('bmark_data',
-                            response.json.bmark, response.json.tag_suggestions,
-                            response.json.last);
+
+                        addBookmarkPanel.port.emit(
+                            'bmark_data',
+                            response.json.bmark,
+                            response.json.tag_suggestions
+                        );
                     } else {
                         console.log('fetch bmark latest');
                         console.log(response.json);
-                        addBookmarkPanel.port.emit('bmark_data', {},
-                            response.json.tag_suggestions,
-                            response.json.last);
+
+                        addBookmarkPanel.port.emit(
+                            'bmark_data',
+                            {},
+                            response.json.tag_suggestions
+                        );
                     }
                 },
+
                 failure: function(response) {
                     console.log('fetch bmark failure');
                     console.log(response.json);
-                    addBookmarkPanel.port.emit('bmark_data', {},
-                        response.json.tag_suggestions, response.json.last);
+
+                    addBookmarkPanel.port.emit(
+                        'bmark_data',
+                        {},
+                        response.json.tag_suggestions
+                    );
                 }
             }, this);
         }

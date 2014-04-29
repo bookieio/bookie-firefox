@@ -12,11 +12,9 @@
  * @param {Object} data The bmark data such as hash_id, url, title, etc.
  *
  */
-self.port.on('bmark_data', function (data, tag_suggestions, last) {
+self.port.on('bmark_data', function (data, tag_suggestions) {
     console.log("Bmark object");
     console.log(data);
-    console.log("Last object");
-    console.log(last);
     console.log("Tag Suggestions array");
     console.log(tag_suggestions);
 
@@ -73,43 +71,12 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
         isHidden = true;
     }
 
-    // If we've gotten back tags from the previous bmark, then lets
-    // build a list of tags for easy re-use.
-    if (last) {
-        var tags = last.tag_str.split(' ');
-        if (tags.length) {
-            tags.forEach(function(tag) {
-                tagList.push(tag);
-            });
-        }
-    }
-
-    // If there are also tag suggestions, push them to the list of available
+    // If there are tag suggestions, push them to the list of available
     // tags used in the form.
     if (tag_suggestions) {
         tag_suggestions.forEach(function(tag) {
             tagList.push(tag);
         });
-    }
-
-    // Helper to remove duplicates from an array.
-    var dedup = function(array) {
-        var obj = {};
-
-        for (var i = 0; i < array.length; i++)
-            obj[array[i]] = true;
-
-        var uniqueArray = [];
-        for (var k in obj) {
-            uniqueArray.push(k);
-        }
-
-        return uniqueArray;
-    };
-
-    // Remove duplicates from the tagList array.
-    if (tagList.length) {
-        tagList = dedup(tagList);
     }
 
     // Update the suggested tags field now

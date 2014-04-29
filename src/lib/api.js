@@ -71,17 +71,13 @@ var ApiBase = function (config) {
 
 
 exports.BookieApi = function (config) {
-
     var _api = ApiBase(config);
-
     var calls = {
-
         // tabData contains the url, desciption and hash_id
         // of the tab in consideration
         bmark: function(tabData, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + tabData.hash_id;
             _api.get(api_url_append, {
-                    last_bmark: true,
                     url: tabData.url,
                     description: tabData.description
                 },
