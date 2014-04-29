@@ -1,10 +1,9 @@
 /*jshint moz:true*/
 
 /**
-    This script is used with the panel as it's contentscript and had access to
-    the html in the panel.
-
-*/
+ * This script is used with the panel as it's contentscript and had access to
+ * the html in the panel.
+ */
 
 /**
  * Given a set of bmark data, update the form UI with the information.
@@ -30,6 +29,14 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
         document.getElementById('url').value = data.url;
     }
 
+    if (data.description) {
+        document.getElementById('description').value = data.description;
+    }
+
+    if (data.extended) {
+        document.getElementById('extended').value = data.extended;
+    }
+
     // If it's an existing bmark we'll have a hash_id to id this bmark.
     if (data.hash_id) {
         del.className = del.className.replace('hidden', '');
@@ -41,6 +48,7 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
     }
     document.getElementById('hash_id').value = data.hash_id;
 
+    // This bmark is being edited, so populate the tag input box.
     if (data.tags) {
         var tag_str = "";
         data.tags.forEach(function(tag) {
@@ -52,6 +60,9 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
     var suggested = document.getElementById("suggested_tags");
     var latest = document.getElementById("latest_tags");
 
+    // Reset the latest tag box before we update it.
+    latest.innerHTML = '';
+
     // When you navigate to a different tab, make sure to delete
     // the tag suggestions for the tab where the panel was
     // previously used. Hide the element and defer the unhide
@@ -62,12 +73,9 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
         isHidden = true;
     }
 
-    // Reset it to be empty.
-    latest.innerHTML = '';
-
+    // If we've gotten back tags from the previous bmark, then lets
+    // build a list of tags for easy re-use.
     if (last) {
-        // If we've gotten back a last bookmark, then make sure we build a
-        // list of tags for the clicking and reusing.
         var tags = last.tag_str.split(' ');
         if (tags.length) {
             tags.forEach(function(tag) {
@@ -76,15 +84,8 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
         }
     }
 
-    if (data.description) {
-        document.getElementById('description').value = data.description;
-    }
-
-    if (data.extended) {
-        document.getElementById('extended').value = data.extended;
-    }
-
-    // If there are tag suggestions, push them to the tagList object
+    // If there are also tag suggestions, push them to the list of available
+    // tags used in the form.
     if (tag_suggestions) {
         tag_suggestions.forEach(function(tag) {
             tagList.push(tag);
@@ -116,10 +117,8 @@ self.port.on('bmark_data', function (data, tag_suggestions, last) {
         latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
     });
 
-    // Show the suggested tags field only if there are elements
-    // in the tagList
+    // Show the suggested tags field, if there are elements in the tagList.
     if (tagList.length) {
-
         // Show by removing the hidden css class.
         suggested.className = suggested.className.replace('hidden', '');
         isHidden = false;
