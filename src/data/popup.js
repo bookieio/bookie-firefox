@@ -78,6 +78,10 @@ self.port.on('bmark_data', function (data, last) {
     if (data.extended) {
         document.getElementById('extended').value = data.extended;
     }
+
+    if (data.is_private) {
+        document.getElementById('is_private').checked = data.is_private;
+    }
 });
 
 
@@ -113,7 +117,8 @@ self.port.on("show", function (userConfig) {
             'description': f.description.value,
             'extended': f.extended,
             'tags': f.tag_filter.value,
-            'inserted_by': f.inserted_by.value
+            'inserted_by': f.inserted_by.value,
+            'is_private': f.is_private.checked
         };
 
         console.log('Cache Content?');
