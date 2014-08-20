@@ -28,21 +28,30 @@ var ApiBase = function (config) {
                 console.log('onComplete ajax call');
                 console.log(response.status);
                 console.log(response.json);
+                console.log(response.statusText);
 
                 // Check if either the response status is not 200 or if the response
                 // cannot be parsed or if the response body contains an error property
-                if(response.status !== 200 || !response.json || response.json.error){
+                if (response.status !== 200 || !response.json || response.json.error) {
                     if(cb.failure){
                         cb.failure(response);
                     }
-                }else{
-                    if(cb.success){
+                } else {
+
+                    // Try to make sure we can parse the JSON response. If
+                    // not, call failure on this.
+                    try {
+                        JSON.parse(response.json);
+                    } catch (e) {
+                        cb.failure(response);
+                    }
+
+                    if(cb.success) {
                         cb.success(response);
                     }
                 }
             }
         });
-
         console.log(request.url);
         return request;
     };
