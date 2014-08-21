@@ -1,10 +1,9 @@
 /*jshint moz:true*/
 
 /**
-    This script is used with the panel as it's contentscript and had access to
-    the html in the panel.
-
-*/
+ * This script is used with the panel as it's contentscript and had access to
+ * the html in the panel.
+ */
 
 /**
  * Given a set of bmark data, update the form UI with the information.
@@ -13,62 +12,19 @@
  * @param {Object} data The bmark data such as hash_id, url, title, etc.
  *
  */
-self.port.on('bmark_data', function (data, last) {
-    console.log('bmark_data');
+self.port.on('bmark_data', function (data, tag_suggestions) {
+    console.log("Bmark object");
     console.log(data);
+    console.log("Tag Suggestions array");
+    console.log(tag_suggestions);
 
     var isHidden,
-        del = document.getElementById('delete');
+        del = document.getElementById('delete'),
+        tagList = [];
 
     // If it's a new bookmark it'll have a url from the tab data.
     if (data.url) {
         document.getElementById('url').value = data.url;
-    }
-
-    // If it's an existing bmark we'll have a hash_id to id this bmark.
-    if (data.hash_id) {
-        del.className = del.className.replace('hidden', '');
-    } else {
-       isHidden = del.className.indexOf('hidden') !== -1;
-        if (!isHidden) {
-            del.className = del.className + " hidden";
-        }
-    }
-    document.getElementById('hash_id').value = data.hash_id;
-
-    if (data.tags) {
-        var tag_str = "";
-        data.tags.forEach(function (tag) {
-            tag_str += tag.name + ' ';
-        });
-        document.getElementById('tag_filter').value = tag_str;
-    }
-
-    console.log(data);
-    console.log(last);
-    var suggested = document.getElementById("suggested_tags");
-    var latest = document.getElementById("latest_tags");
-    // Reset it to be empty.
-    latest.innerHTML = '';
-
-    if (last) {
-        // If we've gotten back a last bookmark, then make sure we build a
-        // list of tags for the clicking and reusing.
-        var tags = last.tag_str.split(' ');
-        if (tags.length) {
-            tags.forEach(function(tag) {
-              latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
-            });
-
-            // Show by removing the hidden css class.
-            suggested.className = suggested.className.replace('hidden', '');
-
-        } else {
-            isHidden = suggested.className.indexOf('hidden') !== -1;
-            if (!isHidden) {
-                suggested.className = suggestsed.className + " hidden";
-            }
-        }
     }
 
     if (data.description) {
@@ -79,11 +35,72 @@ self.port.on('bmark_data', function (data, last) {
         document.getElementById('extended').value = data.extended;
     }
 
+    // If it's an existing bmark we'll have a hash_id to id this bmark.
+    if (data.hash_id) {
+        del.className = del.className.replace('hidden', '');
+    } else {
+        isHidden = del.className.indexOf('hidden') !== -1;
+        if (!isHidden) {
+            del.className = del.className + " hidden";
+        }
+    }
+    document.getElementById('hash_id').value = data.hash_id;
+
+    // This bmark is being edited, so populate the tag input box.
+    if (data.tags) {
+        var tag_str = "";
+        data.tags.forEach(function(tag) {
+            tag_str += tag.name + ' ';
+        });
+        document.getElementById('tag_filter').value = tag_str;
+    }
+
+    var suggested = document.getElementById("suggested_tags");
+    var latest = document.getElementById("latest_tags");
+
+    // Reset the latest tag box before we update it.
+    latest.innerHTML = '';
+
+    // When you navigate to a different tab, make sure to delete
+    // the tag suggestions for the tab where the panel was
+    // previously used. Hide the element and defer the unhide
+    // until the tagList object has some tags in it.
+    isHidden = suggested.className.indexOf('hidden') !== -1;
+    if (!isHidden) {
+        suggested.className = suggested.className + " hidden";
+        isHidden = true;
+    }
+
+    // If there are tag suggestions, push them to the list of available
+    // tags used in the form.
+    if (tag_suggestions) {
+        tag_suggestions.forEach(function(tag) {
+            tagList.push(tag);
+        });
+    }
+
+    // Update the suggested tags field now
+    tagList.forEach(function(tag) {
+        latest.innerHTML += '<a href="" class="prev_tag">' + tag + '</a>';
+    });
+
+    // Show the suggested tags field, if there are elements in the tagList.
+    if (tagList.length) {
+        // Show by removing the hidden css class.
+        suggested.className = suggested.className.replace('hidden', '');
+        isHidden = false;
+    } else {
+        isHidden = suggested.className.indexOf('hidden') !== -1;
+        if (!isHidden) {
+            suggested.className = suggested.className + " hidden";
+            isHidden = true;
+        }
+    }
+
     if (data.is_private) {
         document.getElementById('is_private').checked = data.is_private;
     }
 });
-
 
 /**
  * When the widget is clicked on, the panel is shown and this contentscript is
@@ -115,7 +132,7 @@ self.port.on("show", function (userConfig) {
         var bmark_data = {
             'url': f.url.value,
             'description': f.description.value,
-            'extended': f.extended,
+            'extended': f.extended.value,
             'tags': f.tag_filter.value,
             'inserted_by': f.inserted_by.value,
             'is_private': f.is_private.checked
@@ -173,7 +190,6 @@ self.port.on("show", function (userConfig) {
     });
 });
 
-
 self.port.on('saved', function() {
     //window.close(); this is not allowed apparently
     //@ToDo store the hash of the saved bookmark into the localstorage or some
@@ -194,8 +210,21 @@ self.port.on('ping', function(error_msg) {
     var errors = document.querySelector('#errors');
 
     if (error_msg) {
-        msg = "Attempted to ping the server but got an error: '" + error_msg;
+        var msg = "Attempted to ping the server but got an error: '" + error_msg;
         msg += "'<br />Please check your api url, username, and api_key settings";
+        errors.innerHTML = msg;
+        errors.className = '';
+    } else {
+        errors.innerHTML = '';
+        errors.className = 'hidden';
+    }
+});
+
+self.port.on('saveError', function(error_msg) {
+    var errors = document.querySelector('#errors');
+
+    if (error_msg) {
+        var msg = "Attempted to save the bookmark but got an error: '" + error_msg;
         errors.innerHTML = msg;
         errors.className = '';
     } else {

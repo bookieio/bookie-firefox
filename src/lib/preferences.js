@@ -4,17 +4,29 @@ console.log('preferences.js');
 console.log(preferenceData);
 
 var init = function(prefs, api, storage) {
-    prefs.on("", onPrefChange);
+
+    var that = {
+        storage: storage
+    };
+
+    // Add a listener only when the following changes
+    // Changes in cache_content key don't really matter.
+    prefs.on("api_key", onPrefChange);
+    prefs.on("api_url", onPrefChange);
+    prefs.on("api_username", onPrefChange);
     prefs.on('sync', onSyncBmarks);
 
-    // TODO
-    // hook into /api/v1/{username}/ping to check settings
     function onPrefChange(prefName) {
         api.ping({
-            success:  function(response) {
+            success: function(response) {
+                storage.save('savedPrefs', true);
                 console.log("The " + prefName + " preference changed.");
+
+                // Force update as preferences have been updated.
+                api.checkNew(0, true, 0, that);
             },
             failure: function(response) {
+                storage.save('savedPrefs', false);
                 console.log(
                     "The ping command failed. " +
                     "Please check your api url, username, and api_key. " +
@@ -33,7 +45,9 @@ var init = function(prefs, api, storage) {
             success: function(resp) {
                 resp.json.hash_list.forEach(function(key) {
                     storage.save(key, true);
-                })
+                });
+
+                storage.save('lastSync', (new Date()).getTime());
             },
             failure: function(resp) {
                 console.log('sync fail');
@@ -47,6 +61,5 @@ var init = function(prefs, api, storage) {
     console.log(preferenceData);
     return preferenceData;
 };
-
 
 exports.init = init;

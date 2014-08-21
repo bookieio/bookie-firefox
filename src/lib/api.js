@@ -27,17 +27,32 @@ var ApiBase = function (config) {
             onComplete: function (response) {
                 console.log('onComplete ajax call');
                 console.log(response.status);
+                console.log(response.json);
                 console.log(response.statusText);
-                // console.log(response.json);
-                // @ToDo Check the response for a status code != 200 or if the json
-                // body has an error property in it. If so, this failed and we
-                // should call cb.failure.
-                cb.success(response);
+
+                // Check if either the response status is not 200 or if the response
+                // cannot be parsed or if the response body contains an error property
+                if (response.status !== 200 || !response.json || response.json.error) {
+                    if(cb.failure){
+                        cb.failure(response);
+                    }
+                } else {
+
+                    // Try to make sure we can parse the JSON response. If
+                    // not, call failure on this.
+                    try {
+                        JSON.parse(response.json);
+                    } catch (e) {
+                        cb.failure(response);
+                    }
+
+                    if(cb.success) {
+                        cb.success(response);
+                    }
+                }
             }
         });
-
         console.log(request.url);
-
         return request;
     };
 
@@ -65,18 +80,20 @@ var ApiBase = function (config) {
 
 
 exports.BookieApi = function (config) {
-
     var _api = ApiBase(config);
-
     var calls = {
-        bmark: function (hash_id, callbacks, bind_scope) {
-            var api_url_append = "/bmark/" + hash_id;
-            _api.get(api_url_append,
-                     {last_bmark: true},
-                     callbacks,
-                     bind_scope);
+        // tabData contains the url, desciption and hash_id
+        // of the tab in consideration
+        bmark: function(tabData, callbacks, bind_scope) {
+            var api_url_append = "/bmark/" + tabData.hash_id;
+            _api.get(api_url_append, {
+                    url: tabData.url,
+                    description: tabData.description
+                },
+                callbacks,
+                bind_scope);
         },
-        remove: function (hash_id, callbacks, bind_scope) {
+        remove: function(hash_id, callbacks, bind_scope) {
             var api_url_append = "/bmark/" + hash_id;
             _api.delete(api_url_append, {}, callbacks, bind_scope);
         },
@@ -97,6 +114,47 @@ exports.BookieApi = function (config) {
         sync: function (callbacks, bind_scope) {
             var api_url_append = "/extension/sync";
             _api.get(api_url_append, {}, callbacks, bind_scope);
+        },
+
+        /**
+         * Helper for updating the bmark hash list periodically.
+         * Based on the params below it syncs the bmark list in localStorage
+         *
+         * @method checkNew
+         * @param {Integer} lastSync Last Synced timestamp
+         * @param {Boolean} savedPrefs Do we have valid preferences on file?
+         * @param {Integer} Time period to check if it has elapsed
+         * @param {Object} bind_scope A scope containing the storage object
+         *
+         */
+        checkNew: function(lastSync, savedPrefs, interval, bind_scope) {
+            var timeDiff,
+                staleSync;
+
+            if (lastSync) {
+                timeDiff = new Date().getTime() - lastSync;
+                staleSync = timeDiff > interval;
+            } else {
+                staleSync = false;
+            }
+
+            if ((lastSync && staleSync) || (!lastSync && savedPrefs)) {
+
+                this.sync({
+                    success: function(resp) {
+                        resp.json.hash_list.forEach(function(key) {
+                            bind_scope.storage.save(key, true);
+                        });
+
+                        // Update the last sync flag here.
+                        bind_scope.storage.save('lastSync', (new Date()).getTime());
+                    },
+                    failure: function(resp) {
+                        console.log('sync fail');
+                        console.log(resp.json);
+                    }
+                }, bind_scope);
+            }
         }
     };
 
