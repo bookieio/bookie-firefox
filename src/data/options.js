@@ -39,7 +39,7 @@ self.port.on("prefData", function(prefData) {
     if (prefData.api_url) {
         handle("api_url").value = prefData.api_url;
     } else {
-        handle("api_url").value = "https://bmark.us/api/v1/";
+        handle("api_url").value = "https://bookie.io/api/v1/";
     }
 
     if (prefData.api_username) {

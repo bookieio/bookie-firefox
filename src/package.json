@@ -12,7 +12,7 @@
             "name": "api_url", 
             "title": "Bookie url", 
             "type": "string", 
-            "value": "https://bmark.us/api/v1/"
+            "value": "https://bookie.io/api/v1/"
         }, 
         {
             "name": "api_username", 
