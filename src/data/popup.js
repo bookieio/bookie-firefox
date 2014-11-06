@@ -160,7 +160,12 @@ self.port.on("show", function (userConfig) {
     });
 
     // setup link to users bmark instance page
-    document.getElementById('bookie_site').href = userConfig.bmark_url;
+    var bmark_link = document.getElementById('bookie_site');
+    bmark_link.href = userConfig.bmark_url;
+    bmark_link.addEventListener('click', function(ev) {
+        self.port.emit('hide_popup');
+    });
+
     // Give focus to the tag element to start entering and saving.
     document.getElementById('tag_filter').focus();
 
