@@ -242,5 +242,14 @@ exports.init = function(prefs, api, storage) {
         });
     });
 
+    /**
+     * If we want to hide the popup panel ever, emit this event.
+     *
+     * @event hide
+     */
+    addBookmarkPanel.port.on('hide_popup', function() {
+        addBookmarkPanel.hide();
+    });
+
     return addBookmarkPanel;
 };
